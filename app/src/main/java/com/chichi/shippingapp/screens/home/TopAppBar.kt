@@ -19,7 +19,7 @@ import com.chichi.shippingapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(
+fun AppTopBar(
     isRootRoute: Boolean,
     onBackClicked: () -> Unit
 ) {

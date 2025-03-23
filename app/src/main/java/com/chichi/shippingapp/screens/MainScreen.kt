@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.chichi.shippingapp.screens.home.TopBar
+import androidx.navigation.compose.rememberNavController
+import com.chichi.shippingapp.screens.home.AppBottomBar
+import com.chichi.shippingapp.screens.home.AppTopBar
 
 
 @Composable
@@ -16,10 +18,12 @@ fun MainScreen() {
         ScreensNavigator()
     }
     val isRootRoute = screensNavigator.isRootRoute.collectAsState()
+    val currentBottomTab = screensNavigator.currentBottomTab.collectAsState()
+    val currentRoute = screensNavigator.currentRoute.collectAsState()
 
     Scaffold(
     topBar = {
-        TopBar(
+        AppTopBar(
             isRootRoute.value,
             onBackClicked = {
                 screensNavigator.navigateBack()
@@ -27,6 +31,17 @@ fun MainScreen() {
         )
 
     } ,
+        bottomBar = {
+            BottomAppBar(modifier = Modifier) {
+                AppBottomBar(
+                    bottomTabs = ScreensNavigator.BOTTOM_TABS,
+                    currentBottomTab = currentBottomTab.value,
+                    onTabClicked = { bottomTab ->
+                        screensNavigator.toTab(bottomTab)
+                    }
+                )
+            }
+        },
         content = { paddingValues ->
             MainScreenContent(
                 padding = paddingValues,
@@ -44,4 +59,7 @@ fun MainScreen() {
 private fun MainScreenContent(
     padding: PaddingValues,
     screensNavigator: ScreensNavigator,
-) {}
+) {
+    val parentNavController = rememberNavController()
+    screensNavigator.setParentNavController(parentNavController)
+}

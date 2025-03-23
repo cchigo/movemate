@@ -69,4 +69,8 @@ class ScreensNavigator {
     fun toRoute(route: Route) {
         nestedNavController.navigate(route.navCommand)
     }
+
+    companion object {
+        val BOTTOM_TABS = listOf(BottomTab.Home, BottomTab.Calculate, BottomTab.Shipment, BottomTab.Profile)
+    }
 }

@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun GreetingPreview() {
         ShippingAppTheme {
-            MainScreen() // Ensure preview uses MainScreen, not just BottomBar
+            MainScreen()
         }
     }
 
