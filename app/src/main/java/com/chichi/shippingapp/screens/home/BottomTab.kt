@@ -1,4 +1,4 @@
-package com.chichi.shippingapp
+package com.chichi.shippingapp.screens.home
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite

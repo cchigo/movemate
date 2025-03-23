@@ -1,7 +1,7 @@
 package com.chichi.shippingapp.screens
 
 import androidx.navigation.NavHostController
-import com.chichi.shippingapp.BottomTab
+import com.chichi.shippingapp.screens.home.BottomTab
 import com.chichi.shippingapp.Route
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,11 +22,13 @@ class ScreensNavigator {
     private var parentNavControllerObserveJob: Job? = null
 
 
+    //todo: fix
     fun navigateBack() {
         if (!nestedNavController.popBackStack()) {
             parentNavController.popBackStack()
         }
     }
+
 
     fun setParentNavController(navController: NavHostController) {
         parentNavController = navController
@@ -43,6 +45,7 @@ class ScreensNavigator {
                     else -> throw RuntimeException("unsupported bottom tab: $routeName")
                 }
                 currentBottomTab.value = bottomTab
+                isRootRoute.value = bottomTab == BottomTab.Home
             }.collect()
         }
     }

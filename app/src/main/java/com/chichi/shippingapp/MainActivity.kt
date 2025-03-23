@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.chichi.shippingapp.screens.MainScreen
+import com.chichi.shippingapp.screens.home.MainScreen
 import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 
 class MainActivity : ComponentActivity() {
