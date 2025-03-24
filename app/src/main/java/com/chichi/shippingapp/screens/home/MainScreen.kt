@@ -87,7 +87,6 @@ private fun MainScreenContent(
     Surface(
         modifier = Modifier
             .padding(padding)
-            .padding(horizontal = 12.dp),
     ) {
 
         NavHost(

@@ -35,4 +35,31 @@ val WhiteTextStyleAlpha = TextStyle(
     color = Color.White,
     fontSize = 16.sp
 )
+val LightTextStyle = TextStyle(
+    color = Color.Gray.copy(alpha = 0.7f),
+    fontSize = 14.sp,
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal
+)
+val NormalTextStyle = TextStyle(
+    color = Color.Black,
+    fontSize = 16.sp,
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Normal
+)
+val MediumTextStyle = TextStyle(
+    color = MediumBlack,
+    fontSize = 20.sp,
+    fontFamily = FontFamily.SansSerif,
+    fontWeight = FontWeight.Medium
+)
+
+val BoldTextStyle = TextStyle(
+    color = MediumBlack,
+    fontSize = 20.sp,
+    fontFamily = FontFamily.SansSerif,
+
+    fontWeight = FontWeight.SemiBold
+)
+
 

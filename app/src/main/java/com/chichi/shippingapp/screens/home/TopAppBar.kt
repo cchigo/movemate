@@ -38,13 +38,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
 import com.chichi.shippingapp.ui.theme.OrangeBg
 import com.chichi.shippingapp.ui.theme.PrimaryColor
-import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 import com.chichi.shippingapp.ui.theme.WhiteTextStyleAlpha
 
 
@@ -106,7 +105,7 @@ fun UserInfoBar() {
         Row(
             modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
         ) {
-            CircularProfileImage(imageId = R.drawable.avatar_sample)
+            CircularImage(imageId = R.drawable.avatar_sample)
 
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -226,32 +225,5 @@ fun SearchReceiptBar(){
     }
 }
 
-@Composable
-fun CircularProfileImage(imageId: Int) {
-    Box(
-        modifier = Modifier
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(Color.LightGray)
-            .padding(top = 2.dp)
-    ) {
-        Image(
-            painter = painterResource(id = imageId),
-            contentDescription = "Profile Picture",
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
-    }
-}
 
-
-@Preview(showBackground = true)
-@Composable
-fun TopBarPreview() {
-    ShippingAppTheme {
-        UserInfoBar()
-    }
-}
 
