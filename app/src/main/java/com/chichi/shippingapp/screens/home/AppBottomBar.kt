@@ -14,18 +14,22 @@ fun AppBottomBar(
     currentBottomTab: BottomTab?,
     onTabClicked: (BottomTab) -> Unit,
 ) {
-    NavigationBar {
-        bottomTabs.forEachIndexed { _, bottomTab ->
-            NavigationBarItem(
-                alwaysShowLabel = true,
-                icon = { Icon(bottomTab.icon!!, contentDescription = bottomTab.title) },
-                label = { Text(bottomTab.title) },
-                selected = currentBottomTab == bottomTab,
-                onClick = { onTabClicked(bottomTab) },
-                colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+    if(currentBottomTab == BottomTab.Home){
+        NavigationBar {
+            bottomTabs.forEachIndexed { _, bottomTab ->
+                NavigationBarItem(
+                    alwaysShowLabel = true,
+                    icon = { Icon(bottomTab.icon!!, contentDescription = bottomTab.title) },
+                    label = { Text(bottomTab.title) },
+                    selected = currentBottomTab == bottomTab,
+                    onClick = { onTabClicked(bottomTab) },
+                    colors = NavigationBarItemDefaults.colors(
+                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                    )
                 )
-            )
+            }
         }
     }
+
+
 }
