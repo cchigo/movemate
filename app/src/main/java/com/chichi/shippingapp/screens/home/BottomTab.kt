@@ -6,9 +6,9 @@ import androidx.compose.material.icons.rounded.Home
 import androidx.compose.ui.graphics.vector.ImageVector
 
 //TODO: replace images
-sealed class BottomTab(val icon: ImageVector?, var title: String) {
+sealed class BottomTab(val icon: ImageVector?, var title: String, var topBarTitle: String?= null) {
     data object Home : BottomTab(Icons.Rounded.Home, "Home")
     data object Calculate : BottomTab(Icons.Rounded.Home, "Calculate")
-    data object Shipment : BottomTab(Icons.Rounded.Home, "Shipment")
+    data object Shipment : BottomTab(Icons.Rounded.Home, "Shipment", "Shipment history")
     data object Profile : BottomTab(Icons.Rounded.Favorite, "Profile")
 }

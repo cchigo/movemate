@@ -1,6 +1,7 @@
 package com.chichi.shippingapp.screens.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,10 +39,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
+import com.chichi.shippingapp.ui.theme.LightTextStyle
+import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeBg
 import com.chichi.shippingapp.ui.theme.PrimaryColor
 import com.chichi.shippingapp.ui.theme.WhiteTextStyleAlpha
@@ -54,13 +60,17 @@ fun AppTopBar(
         CenterAlignedTopAppBar(
             title = {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth().padding(0.dp)
                 ) {
+                    val text = if(currentBottomTab?.topBarTitle != null) currentBottomTab.topBarTitle else currentBottomTab?.title
                     Text(
-                        text = currentBottomTab?.title ?: BottomTab.Home.title, color = Color.White
+                        text = text ?: BottomTab.Home.title,
+                        color = Color.White,
+                        style = MediumTextStyle,
+                        textAlign = TextAlign.Center
+
                     )
-
-
                 }
             },
             navigationIcon = {
@@ -69,13 +79,14 @@ fun AppTopBar(
                         onClick = onBackClicked
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                             tint = Color.White,
                             contentDescription = "menu items"
                         )
                     }
                 }
-            },
+            }
+            ,
 
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = PrimaryColor,

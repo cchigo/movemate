@@ -311,10 +311,3 @@ fun VehicleItem(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun TopBarPreview() {
-    ShippingAppTheme {
-        Tracking()
-    }
-}
