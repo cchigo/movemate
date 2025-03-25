@@ -129,6 +129,8 @@ fun CalculateScreen() {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
+                    PackagingSection()
+
                 }
             }
         }
@@ -136,7 +138,95 @@ fun CalculateScreen() {
 
     }
 }
+@Composable
+fun PackagingSection() {
+    var isActive by remember { mutableStateOf(false) }
+    var selectedOption by remember { mutableStateOf("Box") }
 
+    Box {
+        OutlinedButton(
+            onClick = { isActive = true },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+            colors = ButtonColors(
+                containerColor = Color.White,
+                contentColor = Color.White,
+                disabledContainerColor = LightGrey1,
+                disabledContentColor = LightGrey1
+            ),
+            shape = RoundedCornerShape(12.dp),
+            border = null
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(modifier = Modifier.weight(1f)) {
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_shipment),
+                        contentDescription = "Package",
+                        modifier = Modifier
+                            .size(30.dp)
+                            .padding(end = 8.dp, bottom = 4.dp)
+                    )
+
+                    VerticalDivider(
+                        color = Color.LightGray, modifier = Modifier
+                            .height(24.dp)
+                            .width(1.dp)
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        selectedOption, style = MediumTextStyle
+                    )
+                }
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowDown,
+                    tint = MaterialTheme.colorScheme.outlineVariant,
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+
+        DropdownMenu(
+            expanded = isActive,
+            onDismissRequest = { isActive = false },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp)
+                .background(LightGray2)
+        ) {
+            DropdownMenuItem(
+                text = { Text("  📦  Box", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
+                onClick = {
+                    selectedOption = "Box"
+                    isActive = false
+                },
+                modifier = Modifier.padding(4.dp)
+            )
+            DropdownMenuItem(
+                text = { Text("  📦  Package", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
+                onClick = {
+                    selectedOption = "Package"
+                    isActive = false
+                },
+                modifier = Modifier.padding(4.dp)
+            )
+            DropdownMenuItem(
+                text = { Text("  🚚  Shipment", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
+                onClick = {
+                    selectedOption = "Shipment"
+                    isActive = false
+                },
+                modifier = Modifier.padding(4.dp)
+            )
+        }
+
+    }
+}
 
 
 
