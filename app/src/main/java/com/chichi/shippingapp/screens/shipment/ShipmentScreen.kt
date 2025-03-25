@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,7 +22,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -46,12 +46,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.chichi.shippingapp.GradientType
 import com.chichi.shippingapp.R
+import com.chichi.shippingapp.fadingEdge
 import com.chichi.shippingapp.ui.theme.BlackFont3
 import com.chichi.shippingapp.ui.theme.GrayFont1
 import com.chichi.shippingapp.ui.theme.GrayFont3
 import com.chichi.shippingapp.ui.theme.LightGray
-import com.chichi.shippingapp.ui.theme.LightGrey1
 import com.chichi.shippingapp.ui.theme.LightTextStyle
 import com.chichi.shippingapp.ui.theme.MainBg
 import com.chichi.shippingapp.ui.theme.MediumTextStyle
@@ -78,18 +79,21 @@ fun ShipmentScreen() {
         val pending = shipments.count { it.status == ShipmentStatus.Pending }
 
         val tabs = listOf(
-            "All" to all, "Completed" to completed, "In progress" to inProgress,
-            "Pending" to pending, "Cancelled" to cancelled
+            "All" to all,
+            "Completed" to completed,
+            "In progress" to inProgress,
+            "Pending" to pending,
+            "Cancelled" to cancelled
         )
 
         Column(
             modifier = Modifier
-                .padding(values).background(MainBg)
+                .padding(values)
+                .background(MainBg)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
-            ScrollableTabRow(
-                selectedTabIndex = selectedTabIndex,
+            ScrollableTabRow(selectedTabIndex = selectedTabIndex,
                 edgePadding = 20.dp,
                 containerColor = PrimaryColor,
                 indicator = { tabPositions ->
@@ -97,11 +101,9 @@ fun ShipmentScreen() {
                         modifier = Modifier
                             .padding(end = 8.dp)
                             .tabIndicatorOffset(tabPositions[selectedTabIndex])
-                            .width(tabPositions[selectedTabIndex].contentWidth),
-                        color = OrangeBg
+                            .width(tabPositions[selectedTabIndex].contentWidth), color = OrangeBg
                     )
-                }
-            ) {
+                }) {
                 tabs.forEachIndexed { index, (tabTitle, tabCount) ->
                     Tab(
                         selected = selectedTabIndex == index,
@@ -116,20 +118,25 @@ fun ShipmentScreen() {
                             Text(
                                 text = tabTitle,
                                 style = if (selectedTabIndex == index) NormalTextStyle else LightTextStyle,
-                                color = if (selectedTabIndex == index) Color.White else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                                color = if (selectedTabIndex == index) Color.White else MaterialTheme.colorScheme.onPrimary.copy(
+                                    alpha = 0.7f
+                                )
                             )
                             Box(
                                 modifier = Modifier
                                     .background(
-                                        color = if (selectedTabIndex == index) OrangeBg else LightGray.copy(alpha = 0.2f),
-                                        shape = RoundedCornerShape(48)
+                                        color = if (selectedTabIndex == index) OrangeBg else LightGray.copy(
+                                            alpha = 0.2f
+                                        ), shape = RoundedCornerShape(48)
                                     )
                                     .padding(horizontal = 8.dp)
                             ) {
                                 Text(
                                     text = tabCount.toString(),
                                     style = NormalTextStyle,
-                                    color = if (selectedTabIndex == index) Color.White else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f)
+                                    color = if (selectedTabIndex == index) Color.White else MaterialTheme.colorScheme.onPrimary.copy(
+                                        alpha = 0.7f
+                                    )
                                 )
                             }
                         }
@@ -145,8 +152,7 @@ fun ShipmentScreen() {
 
 @Composable
 private fun ShippingList(
-    selectedTabIndex: Int,
-    shipments: List<ShipmentData>
+    selectedTabIndex: Int, shipments: List<ShipmentData>
 ) {
     val listState = rememberLazyListState()
     var startAnimation by remember { mutableStateOf(false) }
@@ -172,45 +178,50 @@ private fun ShippingList(
         }
     }
 
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(8.dp)
+    Box(
+        modifier = Modifier
+            .fadingEdge(GradientType.BOTTOM_FADE)
+            .background(MainBg)
     ) {
-        item {
-            Text(
-                "Shipments",
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-            )
-        }
 
-        itemsIndexed(filteredShipments) { index, shipment ->
-            val animationProgress = remember { Animatable(0f) }
+        LazyColumn(
+            state = listState,
+            contentPadding = PaddingValues(8.dp),
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(bottom = 12.dp)
+        ) {
 
-            LaunchedEffect(startAnimation) {
-                if (startAnimation) {
-                    delay(index * 10L)
-                    animationProgress.animateTo(
-                        targetValue = 1f,
-                        animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)
-                    )
-                }
+            item {
+                Text(
+                    "Shipments",
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                )
             }
 
-            ShipmentHistoryItem(
-                shipmentData = shipment,
-                modifier = Modifier
-                    .graphicsLayer {
-                        alpha = animationProgress.value
-                        translationY = (1f - animationProgress.value) * 30f
+            itemsIndexed(filteredShipments) { index, shipment ->
+                val animationProgress = remember { Animatable(0f) }
+
+                LaunchedEffect(startAnimation) {
+                    if (startAnimation) {
+                        delay(index * 10L)
+                        animationProgress.animateTo(
+                            targetValue = 1f, animationSpec = tween(
+                                durationMillis = 300, easing = FastOutLinearInEasing
+                            )
+                        )
                     }
-            )
+                }
+
+                ShipmentHistoryItem(shipmentData = shipment, modifier = Modifier.graphicsLayer {
+                    alpha = animationProgress.value
+                    translationY = (1f - animationProgress.value) * 30f
+                })
+            }
         }
     }
 }
-
-
 
 
 fun generateShipmentData(count: Int = 20): List<ShipmentData> {
@@ -227,7 +238,6 @@ fun generateShipmentData(count: Int = 20): List<ShipmentData> {
 }
 
 
-
 data class ShipmentData(
     val id: Long = Random.nextLong(),
     val title: String,
@@ -238,57 +248,60 @@ data class ShipmentData(
 )
 
 enum class ShipmentStatus(val data: String) {
-    Loading("loading"),
-    InProgress("in-progress"),
-    Pending("pending"),
-    Completed("completed"),
-    Canceled("canceled");
+    Loading("loading"), InProgress("in-progress"), Pending("pending"), Completed("completed"), Canceled(
+        "canceled"
+    );
 }
-
 
 
 @Composable
 fun ShipmentHistoryItem(
-    shipmentData: ShipmentData,
-    modifier: Modifier = Modifier,
-    alpha: Float = 1f
+    shipmentData: ShipmentData, modifier: Modifier = Modifier, alpha: Float = 1f
 ) {
-    Card (
+    Card(
         colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent // Sets the background color of the card
+            containerColor = Color.Transparent
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         modifier = Modifier.padding(8.dp)
-    ){
-    Row(
-        modifier = modifier.fillMaxWidth().background(Color.White).padding(12.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp)
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(shipmentData.title, style = MediumTextStyle, color = BlackFont3)
-            Text(
-                shipmentData.description,
-                style = LightTextStyle,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(shipmentData.amount, style = MediumTextStyle, color = PrimaryColor)
-                Text("●", color = GrayFont1, modifier = Modifier.padding( horizontal = 6.dp), textAlign = TextAlign.Center)
-                Text(shipmentData.date, color = GrayFont3)
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+            ) {
+                Text(shipmentData.title, style = MediumTextStyle, color = BlackFont3)
+                Text(
+                    shipmentData.description,
+                    style = LightTextStyle,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(shipmentData.amount, style = MediumTextStyle, color = PrimaryColor)
+                    Text(
+                        "●",
+                        color = GrayFont1,
+                        modifier = Modifier.padding(horizontal = 6.dp),
+                        textAlign = TextAlign.Center
+                    )
+                    Text(shipmentData.date, color = GrayFont3)
+                }
             }
-        }
 
-        Image(
-            painter = painterResource(id = R.drawable.ic_shipment),
-            contentDescription = "Shipment image",
-            modifier = Modifier.size(48.dp)
-        )
-    }
+            Image(
+                painter = painterResource(id = R.drawable.ic_shipment),
+                contentDescription = "Shipment image",
+                modifier = Modifier.size(48.dp)
+            )
+        }
     }
 }
 
@@ -296,15 +309,18 @@ fun ShipmentHistoryItem(
 @Preview(showBackground = true)
 @Composable
 fun ShipmentScreenPreview() {
- //   ShipmentScreen()
+    //   ShipmentScreen()
     ShippingAppTheme {
-        ShipmentHistoryItem( shipmentData =  ShipmentData(
 
-            title = "Arriving today!",
-            description = "Your delivery, #NEJ20089934122231 from Atlanta, is arriving today!",
-            amount = "$400 USD",
-            date = "Mar 24, 2025",
-            status = ShipmentStatus.Loading
-        ))
+        ShipmentHistoryItem(
+            shipmentData = ShipmentData(
+
+                title = "Arriving today!",
+                description = "Your delivery, #NEJ20089934122231 from Atlanta, is arriving today!",
+                amount = "$400 USD",
+                date = "Mar 24, 2025",
+                status = ShipmentStatus.Loading
+            )
+        )
     }
 }

@@ -37,4 +37,12 @@ val GreyBottomTabColor = Color(0xFFA0A0A3)
 val CustomGreen = Color(0xFF4CC938)
 val MainBg = Color(0xFFFAFAFA)
 
+//gradient
+
+val GreyGradientColorList = listOf(
+Color(0xFFFFFFFF),
+Color(0xFFF0F0F0),
+Color(0xFF3D2869)
+)
+
 
