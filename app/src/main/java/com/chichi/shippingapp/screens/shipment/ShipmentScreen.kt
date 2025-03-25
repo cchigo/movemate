@@ -19,6 +19,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
@@ -40,14 +43,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chichi.shippingapp.R
+import com.chichi.shippingapp.ui.theme.BlackFont3
+import com.chichi.shippingapp.ui.theme.GrayFont1
+import com.chichi.shippingapp.ui.theme.GrayFont3
 import com.chichi.shippingapp.ui.theme.LightGray
+import com.chichi.shippingapp.ui.theme.LightGrey1
 import com.chichi.shippingapp.ui.theme.LightTextStyle
+import com.chichi.shippingapp.ui.theme.MainBg
+import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.NormalTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeBg
 import com.chichi.shippingapp.ui.theme.PrimaryColor
+import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -73,7 +84,7 @@ fun ShipmentScreen() {
 
         Column(
             modifier = Modifier
-                .padding(values)
+                .padding(values).background(MainBg)
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
@@ -164,7 +175,7 @@ private fun ShippingList(
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(bottom = 16.dp)
+        contentPadding = PaddingValues(8.dp)
     ) {
         item {
             Text(
@@ -179,10 +190,10 @@ private fun ShippingList(
 
             LaunchedEffect(startAnimation) {
                 if (startAnimation) {
-                    delay(index * 50L)
+                    delay(index * 10L)
                     animationProgress.animateTo(
                         targetValue = 1f,
-                        animationSpec = tween(durationMillis = 400, easing = FastOutLinearInEasing)
+                        animationSpec = tween(durationMillis = 300, easing = FastOutLinearInEasing)
                     )
                 }
             }
@@ -242,8 +253,15 @@ fun ShipmentHistoryItem(
     modifier: Modifier = Modifier,
     alpha: Float = 1f
 ) {
+    Card (
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Transparent // Sets the background color of the card
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        modifier = Modifier.padding(8.dp)
+    ){
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().background(Color.White).padding(12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -252,20 +270,25 @@ fun ShipmentHistoryItem(
                 .weight(1f)
                 .padding(8.dp)
         ) {
-            Text(shipmentData.title)
-            Text(shipmentData.description)
-            Row {
-                Text(shipmentData.amount)
-                Text("●", modifier = Modifier.padding(horizontal = 4.dp))
-                Text(shipmentData.date)
+            Text(shipmentData.title, style = MediumTextStyle, color = BlackFont3)
+            Text(
+                shipmentData.description,
+                style = LightTextStyle,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(shipmentData.amount, style = MediumTextStyle, color = PrimaryColor)
+                Text("●", color = GrayFont1, modifier = Modifier.padding( horizontal = 6.dp), textAlign = TextAlign.Center)
+                Text(shipmentData.date, color = GrayFont3)
             }
         }
 
         Image(
-            painter = painterResource(id = R.drawable.ic_ocean),
+            painter = painterResource(id = R.drawable.ic_shipment),
             contentDescription = "Shipment image",
             modifier = Modifier.size(48.dp)
         )
+    }
     }
 }
 
@@ -273,15 +296,15 @@ fun ShipmentHistoryItem(
 @Preview(showBackground = true)
 @Composable
 fun ShipmentScreenPreview() {
-    ShipmentScreen()
-//    ShippingAppTheme {
-//        ShipmentHistoryItem( shipmentData =  ShipmentData(
-//
-//            title = "Arriving today!",
-//            description = "Your delivery, #NEJ20089934122231 from Atlanta, is arriving today!",
-//            amount = "$400 USD",
-//            date = "Mar 24, 2025",
-//            status = ShipmentStatus.Loading
-//        ))
-//    }
+ //   ShipmentScreen()
+    ShippingAppTheme {
+        ShipmentHistoryItem( shipmentData =  ShipmentData(
+
+            title = "Arriving today!",
+            description = "Your delivery, #NEJ20089934122231 from Atlanta, is arriving today!",
+            amount = "$400 USD",
+            date = "Mar 24, 2025",
+            status = ShipmentStatus.Loading
+        ))
+    }
 }

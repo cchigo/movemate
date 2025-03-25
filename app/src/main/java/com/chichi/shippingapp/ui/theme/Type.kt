@@ -28,7 +28,7 @@ val AppTypography = Typography(
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
-        color = LightPurpleFont
+        color = PurpleFont1
     )
 )
 val WhiteTextStyleAlpha = TextStyle(
@@ -48,14 +48,14 @@ val NormalTextStyle = TextStyle(
     fontWeight = FontWeight.Normal
 )
 val MediumTextStyle = TextStyle(
-    color = MediumBlack,
-    fontSize = 20.sp,
+    color = BlackFont3,
+    fontSize = 18.sp,
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Medium
 )
 
 val BoldTextStyle = TextStyle(
-    color = MediumBlack,
+    color = BlackFont2,
     fontSize = 20.sp,
     fontFamily = FontFamily.SansSerif,
 
