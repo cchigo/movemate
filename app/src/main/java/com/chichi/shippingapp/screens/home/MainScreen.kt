@@ -3,6 +3,7 @@ package com.chichi.shippingapp.screens.home
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,7 +14,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -47,23 +50,27 @@ fun MainScreen() {
         )
 
     } ,
-        bottomBar = {
-            BottomAppBar(modifier = Modifier) {
-                AppBottomBar(
-                    bottomTabs = ScreensNavigator.BOTTOM_TABS,
-                    currentBottomTab = currentBottomTab.value,
-                    onTabClicked = { bottomTab ->
-                        screensNavigator.toTab(bottomTab)
-                    }
-                )
-            }
-        },
         content = { paddingValues ->
             MainScreenContent(
                 padding = paddingValues,
                 screensNavigator = screensNavigator
             )
-        }
+        },
+
+        bottomBar = {
+            if(isRootRoute.value) {
+                BottomAppBar() {
+                    AppBottomBar(
+                        bottomTabs = ScreensNavigator.BOTTOM_TABS,
+                        currentBottomTab = currentBottomTab.value,
+                        onTabClicked = { bottomTab ->
+                            screensNavigator.toTab(bottomTab)
+                        }
+                    )
+                }
+            }
+        },
+
 
     )
 

@@ -1,12 +1,18 @@
 package com.chichi.shippingapp.screens.home
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.chichi.shippingapp.ui.theme.GreyBottomTabColor
+import com.chichi.shippingapp.ui.theme.LightGray
+import com.chichi.shippingapp.ui.theme.PrimaryColor
 
 @Composable
 fun AppBottomBar(
@@ -15,7 +21,8 @@ fun AppBottomBar(
     onTabClicked: (BottomTab) -> Unit,
 ) {
     if(currentBottomTab == BottomTab.Home){
-        NavigationBar {
+        NavigationBar(
+            containerColor = LightGray) {
             bottomTabs.forEachIndexed { _, bottomTab ->
                 NavigationBarItem(
                     alwaysShowLabel = true,
@@ -24,11 +31,18 @@ fun AppBottomBar(
                     selected = currentBottomTab == bottomTab,
                     onClick = { onTabClicked(bottomTab) },
                     colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                        selectedTextColor = PrimaryColor,
+                        unselectedTextColor = GreyBottomTabColor,
+                        selectedIconColor = PrimaryColor,
+                        unselectedIconColor = GreyBottomTabColor,
+                        indicatorColor = LightGray.copy(alpha = 0.5f)
                     )
                 )
             }
         }
+    }else{
+
+        Box(modifier = Modifier.height(0.dp)) {}
     }
 
 
