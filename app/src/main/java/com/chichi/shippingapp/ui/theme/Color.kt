@@ -23,6 +23,7 @@ val OrangeText = Color(0xFFD4996A)
 val LightPeach = Color(0xFFFCE6D4)
 val LightGray = Color(0xFFF2F2F2)
 val LightGreen = Color(0xFFD3F0DD)
+val GreyBottomTabColor = Color(0xFFA0A0A3)
 val CustomGreen = Color(0xFF4CC938)
 
 
