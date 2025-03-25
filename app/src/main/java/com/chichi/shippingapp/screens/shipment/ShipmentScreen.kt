@@ -2,8 +2,6 @@ package com.chichi.shippingapp.screens.shipment
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -43,6 +42,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
@@ -55,24 +55,32 @@ import com.chichi.shippingapp.R
 import com.chichi.shippingapp.fadingEdge
 import com.chichi.shippingapp.getFadeInOpacity
 import com.chichi.shippingapp.getHorizontalOffsetX
+import com.chichi.shippingapp.getShippingStatusText
 import com.chichi.shippingapp.ui.theme.BlackFont3
+import com.chichi.shippingapp.ui.theme.DarkGreen2
 import com.chichi.shippingapp.ui.theme.GrayFont1
 import com.chichi.shippingapp.ui.theme.GrayFont3
-import com.chichi.shippingapp.ui.theme.LightGray
+import com.chichi.shippingapp.ui.theme.GreenText2
+import com.chichi.shippingapp.ui.theme.LightGray1
+import com.chichi.shippingapp.ui.theme.LightGray2
+import com.chichi.shippingapp.ui.theme.LightRed
 import com.chichi.shippingapp.ui.theme.LightTextStyle
+import com.chichi.shippingapp.ui.theme.LoadingText2
 import com.chichi.shippingapp.ui.theme.MainBg
 import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.NormalTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeBg
+import com.chichi.shippingapp.ui.theme.PendingText
 import com.chichi.shippingapp.ui.theme.PrimaryColor
 import com.chichi.shippingapp.ui.theme.ShippingAppTheme
+import com.chichi.shippingapp.ui.theme.ShippingStateTextStyle
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
 
 @Composable
 fun ShipmentScreen() {
-    val shipments = remember { generateShipmentData() }
+    val shipments = remember { generateRandomShipmentData() }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     var onScreenLaunch by remember { mutableStateOf(false) }
 
@@ -104,15 +112,17 @@ fun ShipmentScreen() {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.Top
         ) {
-            Box (modifier = Modifier.background(PrimaryColor)){
+            Box(modifier = Modifier.background(PrimaryColor)) {
 
 
-                Box(modifier = Modifier.fillMaxWidth()
-                    .offset(getHorizontalOffsetX(onScreenLaunch))
-                    .alpha(getFadeInOpacity(onScreenLaunch))
-                    .background(PrimaryColor)) {
-                    ScrollableTabRow(
-                        selectedTabIndex = selectedTabIndex,
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .offset(getHorizontalOffsetX(onScreenLaunch))
+                        .alpha(getFadeInOpacity(onScreenLaunch))
+                        .background(PrimaryColor)
+                ) {
+                    ScrollableTabRow(selectedTabIndex = selectedTabIndex,
                         edgePadding = 20.dp,
                         containerColor = PrimaryColor,
                         indicator = { tabPositions ->
@@ -148,7 +158,7 @@ fun ShipmentScreen() {
                                     Box(
                                         modifier = Modifier
                                             .background(
-                                                color = if (selectedTabIndex == index) OrangeBg else LightGray.copy(
+                                                color = if (selectedTabIndex == index) OrangeBg else LightGray1.copy(
                                                     alpha = 0.2f
                                                 ), shape = RoundedCornerShape(48)
                                             )
@@ -213,7 +223,7 @@ private fun ShippingList(
             contentPadding = PaddingValues(8.dp),
             modifier = Modifier
                 .fillMaxHeight()
-                .padding(bottom = 12.dp)
+                .padding(bottom = 8.dp)
         ) {
 
             item {
@@ -248,13 +258,15 @@ private fun ShippingList(
 }
 
 
-fun generateShipmentData(count: Int = 20): List<ShipmentData> {
+fun generateRandomShipmentData(count: Int = 20): List<ShipmentData> {
     val statuses = ShipmentStatus.entries
     return List(count) {
+        val randomAmount = Random.nextInt(20, 500)
+
         ShipmentData(
             title = "Arriving today!",
             description = "Your delivery, #NEJ20089934122231 from Atlanta, is arriving today!",
-            amount = "$1400 USD",
+            amount = "$$randomAmount USD",
             date = "Mar 24, 2025",
             status = statuses[Random.nextInt(statuses.size)]
         )
@@ -271,10 +283,8 @@ data class ShipmentData(
     val status: ShipmentStatus
 )
 
-enum class ShipmentStatus(val data: String) {
-    Loading("loading"), InProgress("in-progress"), Pending("pending"), Completed("completed"), Canceled(
-        "canceled"
-    );
+enum class ShipmentStatus {
+    Loading, InProgress, Pending, Completed, Canceled
 }
 
 
@@ -302,7 +312,34 @@ fun ShipmentHistoryItem(
                     .weight(1f)
                     .padding(8.dp)
             ) {
-                Text(shipmentData.title, style = MediumTextStyle, color = BlackFont3)
+
+                val statusData: ShippingStatusText = getShippingStatusText(shipmentData)
+                Row(
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .background(LightGray2)
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = statusData.image),
+                        contentDescription = "Shipment image",
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        statusData.text,
+                        color = statusData.color,
+                        modifier = Modifier.padding(horizontal = 6.dp),
+                        style = ShippingStateTextStyle,
+                    )
+                }
+                Text(
+                    shipmentData.title,
+                    style = MediumTextStyle,
+                    color = BlackFont3,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+
                 Text(
                     shipmentData.description,
                     style = LightTextStyle,
@@ -328,6 +365,8 @@ fun ShipmentHistoryItem(
         }
     }
 }
+
+data class ShippingStatusText(val text: String, val color: Color, val image: Int)
 
 
 @Preview(showBackground = true)

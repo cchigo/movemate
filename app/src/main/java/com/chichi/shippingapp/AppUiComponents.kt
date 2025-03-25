@@ -24,6 +24,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.chichi.shippingapp.screens.shipment.ShipmentData
+import com.chichi.shippingapp.screens.shipment.ShipmentStatus
+import com.chichi.shippingapp.screens.shipment.ShippingStatusText
+import com.chichi.shippingapp.ui.theme.DarkGreen2
+import com.chichi.shippingapp.ui.theme.GreenText2
+import com.chichi.shippingapp.ui.theme.LightRed
+import com.chichi.shippingapp.ui.theme.LoadingText2
+import com.chichi.shippingapp.ui.theme.PendingText
 
 
 @Composable
@@ -97,6 +105,27 @@ fun getFadeInOpacity(onScreenLaunch: Boolean): Float {
     return opacity
 }
 
+@Composable
+ fun getShippingStatusText(shipmentData: ShipmentData): ShippingStatusText {
+    val statusData: ShippingStatusText = when (shipmentData.status) {
+        ShipmentStatus.Completed -> {
+            ShippingStatusText("completed", DarkGreen2, R.drawable.ic_completed)
+        }
+        ShipmentStatus.InProgress -> {
+            ShippingStatusText("in-progress", GreenText2, R.drawable.ic_progress_state)
+        }
+        ShipmentStatus.Pending -> {
+            ShippingStatusText("pending", PendingText, R.drawable.ic_pending_state)
+        }
+        ShipmentStatus.Canceled -> {
+            ShippingStatusText("canceled", LightRed, R.drawable.ic_canceled)
+        }
+        ShipmentStatus.Loading -> {
+            ShippingStatusText("loading", LoadingText2, R.drawable.ic_loading_state)
+        }
+    }
+    return statusData
+}
 
 enum class GradientType {
     BOTTOM_FADE, TOP_FADE, TOP_BOTTOM_FADE, LEFT_RIGHT_FADE, RADIAL_FADE

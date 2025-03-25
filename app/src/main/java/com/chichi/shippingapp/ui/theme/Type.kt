@@ -13,7 +13,7 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.4.sp
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -51,7 +51,7 @@ val MediumTextStyle = TextStyle(
     color = BlackFont3,
     fontSize = 18.sp,
     fontFamily = FontFamily.SansSerif,
-    fontWeight = FontWeight.Medium
+    fontWeight = FontWeight.Bold
 )
 
 val BoldTextStyle = TextStyle(
@@ -59,6 +59,12 @@ val BoldTextStyle = TextStyle(
     fontSize = 20.sp,
     fontFamily = FontFamily.SansSerif,
 
+    fontWeight = FontWeight.SemiBold
+)
+val ShippingStateTextStyle = TextStyle(
+    color = Color.Black,
+    fontSize = 16.sp,
+    fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.SemiBold
 )
 

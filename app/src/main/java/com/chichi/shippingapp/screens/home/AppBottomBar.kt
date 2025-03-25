@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chichi.shippingapp.ui.theme.GreyBottomTabColor
-import com.chichi.shippingapp.ui.theme.LightGray
+import com.chichi.shippingapp.ui.theme.LightGray1
 import com.chichi.shippingapp.ui.theme.PrimaryColor
 
 @Composable
@@ -22,7 +22,7 @@ fun AppBottomBar(
 ) {
     if(currentBottomTab == BottomTab.Home){
         NavigationBar(
-            containerColor = LightGray) {
+            containerColor = LightGray1) {
             bottomTabs.forEachIndexed { _, bottomTab ->
                 NavigationBarItem(
                     alwaysShowLabel = true,
@@ -35,7 +35,7 @@ fun AppBottomBar(
                         unselectedTextColor = GreyBottomTabColor,
                         selectedIconColor = PrimaryColor,
                         unselectedIconColor = GreyBottomTabColor,
-                        indicatorColor = LightGray.copy(alpha = 0.5f)
+                        indicatorColor = LightGray1.copy(alpha = 0.5f)
                     )
                 )
             }

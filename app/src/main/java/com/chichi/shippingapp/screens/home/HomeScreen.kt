@@ -34,19 +34,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
 import com.chichi.shippingapp.ui.theme.BoldTextStyle
-import com.chichi.shippingapp.ui.theme.LightGray
+import com.chichi.shippingapp.ui.theme.LightGray1
 import com.chichi.shippingapp.ui.theme.LightGreen
 import com.chichi.shippingapp.ui.theme.LightPeach
 import com.chichi.shippingapp.ui.theme.LightTextStyle
 import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.NormalTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeText
-import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 
 
 @Composable
@@ -117,7 +115,7 @@ fun Tracking() {
 
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = LightGray,
+                    color = LightGray1,
                     modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
                 )
                 Row(
@@ -187,7 +185,7 @@ fun Tracking() {
                 }
                 HorizontalDivider(
                     thickness = 1.dp,
-                    color = LightGray,
+                    color = LightGray1,
                     modifier = Modifier.padding(top = 16.dp, bottom = 12.dp)
                 )
 
