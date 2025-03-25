@@ -4,11 +4,16 @@ package com.chichi.shippingapp.screens.calculate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +24,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -37,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -130,6 +140,32 @@ fun CalculateScreen() {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     PackagingSection()
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            //Category
+            AnimatedVisibility(
+                visible = onScreenLaunch, enter = slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(600)
+                )
+            ) {
+                Column {
+                    Text(
+                        text = "Categories", style = MediumTextStyle.copy(color = BlackFont4)
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "What are you sending?",
+                        style = NormalTextStyle.copy(color = LightGray3)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    CategoryTagGrid()
 
                 }
             }
@@ -227,7 +263,6 @@ fun PackagingSection() {
 
     }
 }
-
 
 
 @Composable
@@ -365,23 +400,68 @@ private fun DestinationSection(
             singleLine = true,
             textStyle = MediumTextStyle
         )
-//            Button(
-//                onClick = {
-//                    if (isFormValid.value) {
-//
-//
-//                    }
-//                },
-//                modifier = Modifier.fillMaxWidth(),
-//                enabled = isFormValid.value
-//            ) {
-//                Text(text = "Enter", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-//            }
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun CategoryTagGrid() {
+    val categories = listOf(
+        CategoryType("Documents"),
+        CategoryType("Glass"),
+        CategoryType("Liquid"),
+        CategoryType("Food"),
+        CategoryType("Electronic"),
+        CategoryType("Product"),
+        CategoryType("Others")
+    )
+    val selectedCategories = remember { mutableStateListOf<String>() }
+
+
+    FlowRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(0.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        categories.forEach { category ->
+            val isSelected = selectedCategories.contains(category.category)
+
+            CategoryTagItem(
+                category = category,
+                isSelected = isSelected,
+                onClick = {
+                    if (isSelected) {
+                        selectedCategories.remove(category.category)
+                    } else {
+                        selectedCategories.add(category.category)
+                    }
+                }
+            )
+        }
+    }
+}
+
+
+@Composable
+fun CategoryTagItem(category: CategoryType, isSelected: Boolean, onClick: () -> Unit) {
+    Text(
+        style = NormalTextStyle.copy(fontSize = 16.sp),
+        text = category.category,
+        modifier = Modifier
+            .clickable { onClick() }
+            .border(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray, RoundedCornerShape(8.dp))
+            .background(if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent, RoundedCornerShape(8.dp))
+            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .wrapContentSize(),
+        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black
+    )
+}
+
+data class CategoryType(val category: String)
 @Preview(showBackground = true)
 @Composable
 fun ShippingFormScreenPreview() {
-    CalculateScreen()
+    CategoryTagGrid()
 }
