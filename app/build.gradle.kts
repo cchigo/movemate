@@ -62,6 +62,7 @@ dependencies {
     // Dependency Injection
     implementation(libs.hilt)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.play.services.tagmanager.v4.impl)
     ksp(libs.hilt.compiler)
 
     // Navigation

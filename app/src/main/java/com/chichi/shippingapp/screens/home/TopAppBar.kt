@@ -61,9 +61,12 @@ fun AppTopBar(
             title = {
                 Row(
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.fillMaxWidth().padding(0.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp)
                 ) {
-                    val text = if(currentBottomTab?.topBarTitle != null) currentBottomTab.topBarTitle else currentBottomTab?.title
+                    val text =
+                        if (currentBottomTab?.topBarTitle != null) currentBottomTab.topBarTitle else currentBottomTab?.title
                     Text(
                         text = text ?: BottomTab.Home.title,
                         color = Color.White,
@@ -85,8 +88,7 @@ fun AppTopBar(
                         )
                     }
                 }
-            }
-            ,
+            },
 
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = PrimaryColor,
@@ -127,9 +129,11 @@ fun UserInfoBar() {
                         painter = painterResource(id = R.drawable.ic_location),
                         contentDescription = "Location",
                         tint = Color.White,
-                        modifier = Modifier.height(16.dp).graphicsLayer(
-                            rotationZ = -10f
-                        )
+                        modifier = Modifier
+                            .height(16.dp)
+                            .graphicsLayer(
+                                rotationZ = -10f
+                            )
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
@@ -140,8 +144,10 @@ fun UserInfoBar() {
                 }
 
 
-                Row(verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(top = 4.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
                     Text(
                         "Wertheimer, Illinois",
                         style = WhiteTextStyleAlpha
@@ -150,7 +156,9 @@ fun UserInfoBar() {
                         imageVector = Icons.Outlined.KeyboardArrowDown,
                         contentDescription = "Dropdown",
                         tint = Color.White,
-                        modifier = Modifier.padding(start = 4.dp,).width(18.dp)
+                        modifier = Modifier
+                            .padding(start = 4.dp)
+                            .width(18.dp)
                     )
                 }
             }
@@ -179,7 +187,7 @@ fun UserInfoBar() {
 
 
 @Composable
-fun SearchReceiptBar(){
+fun SearchReceiptBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -189,47 +197,53 @@ fun SearchReceiptBar(){
     ) {
         val searchQuery = remember { mutableStateOf("") }
 
-            OutlinedTextField(
+        OutlinedTextField(
 
-                value = searchQuery.value,
-                onValueChange = { searchQuery.value = it },
-                placeholder = { Text("Enter the receipt number...", color = Color.Gray.copy(alpha = 0.8f), fontSize = 14.sp) },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_search),
-                        contentDescription = "Search",
-                        tint = PrimaryColor,
+            value = searchQuery.value,
+            onValueChange = { searchQuery.value = it },
+            placeholder = {
+                Text(
+                    "Enter the receipt number...",
+                    color = Color.Gray.copy(alpha = 0.8f),
+                    fontSize = 14.sp
+                )
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_search),
+                    contentDescription = "Search",
+                    tint = PrimaryColor,
 
                     )
-                },
+            },
 
-                textStyle = TextStyle(color = Color.Gray),
-                modifier = Modifier.fillMaxWidth().background(Color.White),
-                singleLine = true,
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.Transparent,
-                    disabledContainerColor =Color.White,
-                    unfocusedIndicatorColor = Color.White,
-                    disabledIndicatorColor = Color.White
-                ),
-                trailingIcon = {
-                    Surface(
-                        modifier = Modifier.clip(CircleShape), color = OrangeBg
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_scan),
-                            contentDescription = "Receipt",
-                            tint = Color.White,
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .size(20.dp)
-                        )
-                    }
-                },
-
-
-                )
+            textStyle = TextStyle(color = Color.Gray),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.White),
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.White,
+                unfocusedIndicatorColor = Color.White,
+                disabledIndicatorColor = Color.White
+            ),
+            trailingIcon = {
+                Surface(
+                    modifier = Modifier.clip(CircleShape), color = OrangeBg
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_scan),
+                        contentDescription = "Receipt",
+                        tint = Color.White,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(20.dp)
+                    )
+                }
+            },
+        )
 
     }
 }

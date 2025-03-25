@@ -20,12 +20,12 @@ class MainActivity : ComponentActivity() {
 }
 
 
-    @Preview(showBackground = true)
-    @Composable
-    fun GreetingPreview() {
-        ShippingAppTheme {
-            MainScreen()
-        }
-    }
+//    @Preview(showBackground = true)
+//    @Composable
+//    fun GreetingPreview() {
+//        ShippingAppTheme {
+//            MainScreen()
+//        }
+//    }
 
 
