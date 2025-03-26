@@ -52,6 +52,7 @@ val LightGreen = Color(0xFFD3F0DD)
 val GreyBottomTabColor = Color(0xFFA0A0A3)
 val CustomGreen = Color(0xFF4CC938)
 val MainBg = Color(0xFFFAFAFA)
+val DarkBg = Color(0xFF181D2E)
 
 
 //gradient

@@ -47,14 +47,14 @@ val NormalTextStyle = TextStyle(
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Normal
 )
-val MediumTextStyle = TextStyle(
+val BoldTextStyle = TextStyle(
     color = BlackFont3,
     fontSize = 18.sp,
     fontFamily = FontFamily.SansSerif,
     fontWeight = FontWeight.Bold
 )
 
-val BoldTextStyle = TextStyle(
+val MediumTextStyle = TextStyle(
     color = BlackFont2,
     fontSize = 20.sp,
     fontFamily = FontFamily.SansSerif,

@@ -4,7 +4,6 @@ package com.chichi.shippingapp.screens.calculate
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,14 +24,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.staggeredgrid.LazyHorizontalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -39,11 +41,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -57,16 +59,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chichi.shippingapp.HorizontalSpacer
 import com.chichi.shippingapp.R
-import com.chichi.shippingapp.ui.theme.BlackFont4
+import com.chichi.shippingapp.ui.theme.BlackFont3
+import com.chichi.shippingapp.ui.theme.DarkBg
 import com.chichi.shippingapp.ui.theme.LightGray2
 import com.chichi.shippingapp.ui.theme.LightGray3
 import com.chichi.shippingapp.ui.theme.LightGrey1
+import com.chichi.shippingapp.ui.theme.MainBg
 import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.NormalTextStyle
+import com.chichi.shippingapp.ui.theme.OrangeBg
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -80,8 +87,10 @@ fun CalculateScreen() {
     val receiverLocationText = remember { MutableStateFlow("") }
     val weightText = remember { MutableStateFlow("") }
     val isFormValid = remember { mutableStateOf(false) }
-    val userNameError = remember { mutableStateOf<String?>(null) }
-    val passwordError = remember { mutableStateOf<String?>(null) }
+    val selectedPackaging = remember { mutableStateOf("Box") }
+
+    val selectedOption by remember { mutableStateOf("Box") }
+
 
     var onScreenLaunch by remember { mutableStateOf(false) }
 
@@ -99,307 +108,334 @@ fun CalculateScreen() {
         ) { sLocation, rLocation, weightText ->
             Triple(sLocation, rLocation, weightText)
         }.collect { (s, r, w) ->
-            isFormValid.value = s.isNotEmpty() && r.isNotEmpty() && r.isNotEmpty()
+            isFormValid.value = s.isNotEmpty() && r.isNotEmpty() && w.isNotEmpty()
         }
     }
 
-    Scaffold(
+    Column(
         modifier = Modifier
+            .background(MainBg)
             .fillMaxSize()
-            .background(Color.Blue)
-            .padding(4.dp),
-    ) { values ->
-        Column() {
-            Text(
-                text = "Destination", style = MediumTextStyle.copy(color = BlackFont4)
+            .padding(vertical = 16.dp, horizontal = 16.dp)
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = "Destination", style = MediumTextStyle.copy(color = BlackFont3)
+        )
+        Spacer(modifier = Modifier.height(12.dp))
+
+        DestinationSection(senderLocationText, receiverLocationText, weightText)
+        HorizontalSpacer()
+
+        //Packaging
+        AnimatedVisibility(
+            visible = onScreenLaunch, enter = slideInVertically(
+                initialOffsetY = { it }, animationSpec = tween(600)
             )
-            Spacer(modifier = Modifier.height(20.dp))
-
-            DestinationSection(values, senderLocationText, receiverLocationText, weightText)
-            //  }
-            Spacer(modifier = Modifier.height(20.dp))
-
-
-            //Packaging
-            AnimatedVisibility(
-                visible = onScreenLaunch, enter = slideInVertically(
-                    initialOffsetY = { it }, animationSpec = tween(600)
+        ) {
+            Column {
+                Text(
+                    text = "Packaging", style = MediumTextStyle.copy(color = DarkBg)
                 )
-            ) {
-                Column {
-                    Text(
-                        text = "Packaging", style = MediumTextStyle.copy(color = BlackFont4)
-                    )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
 
-                    Text(
-                        text = "What are you sending?",
-                        style = NormalTextStyle.copy(color = LightGray3)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    PackagingSection()
-
-                }
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            //Category
-            AnimatedVisibility(
-                visible = onScreenLaunch, enter = slideInVertically(
-                    initialOffsetY = { it }, animationSpec = tween(600)
+                Text(
+                    text = "What are you sending?", style = NormalTextStyle.copy(color = LightGray3)
                 )
-            ) {
-                Column {
-                    Text(
-                        text = "Categories", style = MediumTextStyle.copy(color = BlackFont4)
-                    )
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                HorizontalSpacer()
+                PackagingDropdown(selectedPackaging)
 
-                    Text(
-                        text = "What are you sending?",
-                        style = NormalTextStyle.copy(color = LightGray3)
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    CategoryTagGrid()
-
-                }
             }
         }
 
+        HorizontalSpacer()
+        //Category
+        AnimatedVisibility(
+            visible = onScreenLaunch, enter = slideInVertically(
+                initialOffsetY = { it }, animationSpec = tween(600)
+            )
+        ) {
+            Column {
+                Text(
+                    text = "Categories", style = MediumTextStyle.copy(color = DarkBg)
+                )
 
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "What are you sending?", style = NormalTextStyle.copy(color = LightGray3)
+                )
+                HorizontalSpacer()
+                CategoryTagGrid()
+
+            }
+        }
+        Spacer(modifier = Modifier.height(40.dp))
+        SubmitButton(isFormValid)
     }
+
 }
+
 @Composable
-fun PackagingSection() {
+fun PackagingDropdown(selectedPackaging: MutableState<String>) {
     var isActive by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf("Box") }
 
-    Box {
-        OutlinedButton(
-            onClick = { isActive = true },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-            colors = ButtonColors(
-                containerColor = Color.White,
-                contentColor = Color.White,
-                disabledContainerColor = LightGrey1,
-                disabledContentColor = LightGrey1
-            ),
-            shape = RoundedCornerShape(12.dp),
-            border = null
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
+    Card(elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)) {
+        Box() {
+            OutlinedButton(
+                onClick = { isActive = true },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonColors(
+                    containerColor = Color.White,
+                    contentColor = Color.White,
+                    disabledContainerColor = LightGrey1,
+                    disabledContentColor = LightGrey1
+                ),
+                shape = RoundedCornerShape(12.dp),
+                border = null
             ) {
-                Row(modifier = Modifier.weight(1f)) {
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_shipment),
-                        contentDescription = "Package",
-                        modifier = Modifier
-                            .size(30.dp)
-                            .padding(end = 8.dp, bottom = 4.dp)
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_shipment),
+                            contentDescription = "Package",
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(end = 8.dp, bottom = 4.dp)
+                        )
 
-                    VerticalDivider(
-                        color = Color.LightGray, modifier = Modifier
-                            .height(24.dp)
-                            .width(1.dp)
-                    )
+                        VerticalDivider(
+                            color = Color.LightGray, modifier = Modifier
+                                .fillMaxHeight()
+                                .width(1.dp)
+                        )
 
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    Text(
-                        selectedOption, style = MediumTextStyle
+                        Spacer(modifier = Modifier.width(8.dp))
+                        //selected text state
+                        Text(
+                            selectedPackaging.value,
+                            style = MediumTextStyle,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    Icon(
+                        imageVector = Icons.Default.KeyboardArrowDown,
+                        tint = MaterialTheme.colorScheme.outlineVariant,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
-                    tint = MaterialTheme.colorScheme.outlineVariant,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+            }
+
+            DropdownMenu(
+                expanded = isActive,
+                onDismissRequest = { isActive = false },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(0.dp)
+                    .background(LightGray2)
+            ) {
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            "  📦  Box",
+                            style = MediumTextStyle,
+                            textAlign = TextAlign.Center
+                        )
+                    },
+                    onClick = {
+                        selectedPackaging.value = "Box"
+                        isActive = false
+                    },
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            "  📦  Package",
+                            style = MediumTextStyle
+                        )
+                    },
+                    onClick = {
+                        selectedPackaging.value = "Package"
+                        isActive = false
+                    }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            "  🚚  Shipment",
+                            style = MediumTextStyle
+                        )
+                    },
+                    onClick = {
+                        selectedPackaging.value = "Shipment"
+                        isActive = false
+                    }
                 )
             }
-        }
 
-        DropdownMenu(
-            expanded = isActive,
-            onDismissRequest = { isActive = false },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(0.dp)
-                .background(LightGray2)
-        ) {
-            DropdownMenuItem(
-                text = { Text("  📦  Box", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
-                onClick = {
-                    selectedOption = "Box"
-                    isActive = false
-                },
-                modifier = Modifier.padding(4.dp)
-            )
-            DropdownMenuItem(
-                text = { Text("  📦  Package", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
-                onClick = {
-                    selectedOption = "Package"
-                    isActive = false
-                },
-                modifier = Modifier.padding(4.dp)
-            )
-            DropdownMenuItem(
-                text = { Text("  🚚  Shipment", fontWeight = FontWeight.Bold, fontSize = 16.sp) },
-                onClick = {
-                    selectedOption = "Shipment"
-                    isActive = false
-                },
-                modifier = Modifier.padding(4.dp)
-            )
         }
-
     }
 }
 
 
 @Composable
 private fun DestinationSection(
-    values: PaddingValues,
+    //  values: PaddingValues,
     senderLocationText: MutableStateFlow<String>,
     receiverLocationText: MutableStateFlow<String>,
     weightText: MutableStateFlow<String>
 ) {
-    Column(
-        modifier = Modifier
-            .padding(values)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color.Red)
-            .wrapContentSize()
-            .padding(12.dp)
-            .fillMaxWidth(),
-        verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
-
-
-        OutlinedTextField(
-            value = senderLocationText.collectAsState().value,
-            onValueChange = { senderLocationText.value = it },
+        Column(
             modifier = Modifier
-                .height(56.dp)
-                .fillMaxWidth()
-                .background(LightGray2, shape = RoundedCornerShape(4.dp)),
-            leadingIcon = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_sender_loaction),
-                        contentDescription = "Sender location icon",
-                        modifier = Modifier
-                            .padding(start = 4.dp, end = 4.dp)
-                            .size(24.dp)
-                    )
-                    VerticalDivider(
-                        color = Color.LightGray,
-                        modifier = Modifier
-                            .height(24.dp)
-                            .padding(end = 0.dp)
-                            .width(1.dp)
-                    )
-                }
-            },
-            placeholder = { Text("Sender location", color = LightGray3, style = NormalTextStyle) },
-            colors = OutlinedTextFieldDefaults.colors(
-                disabledBorderColor = Transparent,
-                disabledContainerColor = Transparent,
-                focusedBorderColor = Transparent,
-                unfocusedBorderColor = Transparent
-            ),
-            singleLine = true,
-            textStyle = MediumTextStyle
-        )
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .wrapContentSize()
+                .padding(20.dp)
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
 
-        Spacer(modifier = Modifier.height(12.dp))
+            OutlinedTextField(
+                value = senderLocationText.collectAsState().value,
+                onValueChange = { senderLocationText.value = it },
+                modifier = Modifier
 
-        OutlinedTextField(
-            value = receiverLocationText.collectAsState().value,
-            onValueChange = { receiverLocationText.value = it },
-            modifier = Modifier
-                .height(56.dp)
-                .fillMaxWidth()
-                .background(LightGray2, shape = RoundedCornerShape(4.dp)),
-            leadingIcon = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_receiver_loaction),
-                        contentDescription = "Receiver location icon",
-                        modifier = Modifier
-                            .padding(start = 4.dp, end = 4.dp)
-                            .size(24.dp)
+                    .fillMaxWidth()
+                    .background(LightGray2, shape = RoundedCornerShape(4.dp)),
+                leadingIcon = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_sender_loaction),
+                            contentDescription = "Sender location icon",
+                            modifier = Modifier
+                                .padding(start = 4.dp, end = 4.dp)
+                                .size(24.dp)
+                        )
+                        VerticalDivider(
+                            color = Color.LightGray,
+                            modifier = Modifier
+                                .height(24.dp)
+                                .padding(end = 0.dp)
+                                .width(1.dp)
+                        )
+                    }
+                },
+                placeholder = {
+                    Text(
+                        "Sender location", color = LightGray3, style = NormalTextStyle
                     )
-                    VerticalDivider(
-                        color = Color.LightGray,
-                        modifier = Modifier
-                            .height(24.dp)
-                            .padding(end = 0.dp)
-                            .width(1.dp)
-                    )
-                }
-            },
-            placeholder = {
-                Text(
-                    "Receiver location", color = LightGray3, style = NormalTextStyle
-                )
-            },
-            colors = OutlinedTextFieldDefaults.colors(
-                disabledBorderColor = Transparent,
-                disabledContainerColor = Transparent,
-                focusedBorderColor = Transparent,
-                unfocusedBorderColor = Transparent
-            ),
-            singleLine = true,
-            textStyle = MediumTextStyle
-        )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledBorderColor = Transparent,
+                    disabledContainerColor = Transparent,
+                    focusedBorderColor = Transparent,
+                    unfocusedBorderColor = Transparent
+                ),
+                singleLine = true,
+                textStyle = MediumTextStyle
+            )
 
-        Spacer(modifier = Modifier.height(20.dp))
-        OutlinedTextField(
-            value = weightText.collectAsState().value,
-            onValueChange = { weightText.value = it },
-            modifier = Modifier
-                .height(56.dp)
-                .fillMaxWidth()
-                .background(LightGray2, shape = RoundedCornerShape(4.dp)),
-            leadingIcon = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_weight),
-                        contentDescription = "weightText icon",
-                        modifier = Modifier
-                            .padding(start = 4.dp, end = 4.dp)
-                            .size(24.dp)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = receiverLocationText.collectAsState().value,
+                onValueChange = { receiverLocationText.value = it },
+                modifier = Modifier
+                    .height(56.dp)
+                    .fillMaxWidth()
+                    .background(LightGray2, shape = RoundedCornerShape(4.dp)),
+                leadingIcon = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_receiver_loaction),
+                            contentDescription = "Receiver location icon",
+                            modifier = Modifier
+                                .padding(start = 4.dp, end = 4.dp)
+                                .size(24.dp)
+                        )
+                        VerticalDivider(
+                            color = Color.LightGray,
+                            modifier = Modifier
+                                .height(24.dp)
+                                .padding(end = 0.dp)
+                                .width(1.dp)
+                        )
+                    }
+                },
+                placeholder = {
+                    Text(
+                        "Receiver location", color = LightGray3, style = NormalTextStyle
                     )
-                    VerticalDivider(
-                        color = Color.LightGray,
-                        modifier = Modifier
-                            .height(24.dp)
-                            .padding(end = 0.dp)
-                            .width(1.dp)
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledBorderColor = Transparent,
+                    disabledContainerColor = Transparent,
+                    focusedBorderColor = Transparent,
+                    unfocusedBorderColor = Transparent
+                ),
+                singleLine = true,
+                textStyle = MediumTextStyle
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedTextField(
+                value = weightText.collectAsState().value,
+                onValueChange = { weightText.value = it },
+                modifier = Modifier
+                    .height(56.dp)
+                    .fillMaxWidth()
+                    .background(LightGray2, shape = RoundedCornerShape(4.dp)),
+                leadingIcon = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_weight),
+                            contentDescription = "weightText icon",
+                            modifier = Modifier
+                                .padding(start = 4.dp, end = 4.dp)
+                                .size(24.dp)
+                        )
+                        VerticalDivider(
+                            color = Color.LightGray,
+                            modifier = Modifier
+                                .height(24.dp)
+                                .padding(end = 0.dp)
+                                .width(1.dp)
+                        )
+                    }
+                },
+                placeholder = {
+                    Text(
+                        "Approx weight", color = LightGray3, style = NormalTextStyle
                     )
-                }
-            },
-            placeholder = { Text("Approx weight", color = LightGray3, style = NormalTextStyle) },
-            colors = OutlinedTextFieldDefaults.colors(
-                disabledBorderColor = Transparent,
-                disabledContainerColor = Transparent,
-                focusedBorderColor = Transparent,
-                unfocusedBorderColor = Transparent
-            ),
-            singleLine = true,
-            textStyle = MediumTextStyle
-        )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    disabledBorderColor = Transparent,
+                    disabledContainerColor = Transparent,
+                    focusedBorderColor = Transparent,
+                    unfocusedBorderColor = Transparent
+                ),
+                singleLine = true,
+                textStyle = MediumTextStyle
+            )
+        }
     }
 }
 
@@ -428,17 +464,13 @@ fun CategoryTagGrid() {
         categories.forEach { category ->
             val isSelected = selectedCategories.contains(category.category)
 
-            CategoryTagItem(
-                category = category,
-                isSelected = isSelected,
-                onClick = {
-                    if (isSelected) {
-                        selectedCategories.remove(category.category)
-                    } else {
-                        selectedCategories.add(category.category)
-                    }
+            CategoryTagItem(category = category, isSelected = isSelected, onClick = {
+                if (isSelected) {
+                    selectedCategories.remove(category.category)
+                } else {
+                    selectedCategories.add(category.category)
                 }
-            )
+            })
         }
     }
 }
@@ -446,22 +478,74 @@ fun CategoryTagGrid() {
 
 @Composable
 fun CategoryTagItem(category: CategoryType, isSelected: Boolean, onClick: () -> Unit) {
-    Text(
-        style = NormalTextStyle.copy(fontSize = 16.sp),
-        text = category.category,
-        modifier = Modifier
-            .clickable { onClick() }
-            .border(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray, RoundedCornerShape(8.dp))
-            .background(if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else Color.Transparent, RoundedCornerShape(8.dp))
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .wrapContentSize(),
-        color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Black
-    )
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+        .background(
+            if (isSelected) DarkBg else Transparent, RoundedCornerShape(8.dp)
+        )
+        .border(
+            1.dp, if (isSelected) Transparent else DarkBg, RoundedCornerShape(8.dp)
+        )
+        .padding(horizontal = 14.dp, vertical = 10.dp)
+        .clickable { onClick() }) {
+        if (isSelected) {
+            Icon(
+                painter = painterResource(id = R.drawable.round_done_24),
+                modifier = Modifier.size(12.dp),
+                contentDescription = null,
+                tint = Color.White
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+        }
+        Text(
+            text = category.category,
+            style = NormalTextStyle.copy(fontSize = 16.sp),
+            color = if (isSelected) Color.White else DarkBg
+        )
+    }
 }
 
 data class CategoryType(val category: String)
+
+@Composable
+fun SubmitButton(isFormValid: MutableState<Boolean>) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.TopEnd
+    ) {
+        Button(
+            onClick = {
+                if (isFormValid.value) {
+                    //nav to receipt
+                    // Handle button click
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 20.dp),
+            enabled = isFormValid.value,
+            contentPadding = PaddingValues(20.dp),
+            colors = ButtonDefaults.buttonColors(
+                disabledContainerColor = OrangeBg.copy(alpha = 0.4f),
+                disabledContentColor = Color.White,
+                containerColor = OrangeBg,
+                contentColor = Color.White
+
+            )
+        ) {
+            Text(
+                text = "Calculate",
+                fontSize = 18.sp,
+                style = NormalTextStyle.copy(color = Color.White)
+            )
+        }
+    }
+}
+
+
 @Preview(showBackground = true)
 @Composable
 fun ShippingFormScreenPreview() {
-    CategoryTagGrid()
+    CalculateScreen()
 }
