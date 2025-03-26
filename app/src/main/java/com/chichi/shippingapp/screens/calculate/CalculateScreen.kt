@@ -84,7 +84,6 @@ import kotlinx.coroutines.flow.debounce
 @Composable
 fun CalculateScreen(
     navController: NavController,
-    onQuestionClicked: (() -> Unit)? = null // Nullable lambda
 ) {
     val senderLocationText = remember { MutableStateFlow("") }
 
