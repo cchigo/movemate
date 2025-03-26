@@ -1,8 +1,10 @@
 package com.chichi.shippingapp.screens.calculate
 
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -90,6 +92,7 @@ import kotlinx.coroutines.flow.debounce
 fun CalculateScreen(
     navController: NavController,
 ) {
+    BackHandler(enabled = true) {}
     val senderLocationText = remember { MutableStateFlow("") }
 
     val receiverLocationText = remember { MutableStateFlow("") }
@@ -121,8 +124,7 @@ fun CalculateScreen(
         visibleState = transitionState, enter = fadeIn(
             animationSpec = tween(durationMillis = 1200)
         ) + slideInHorizontally(
-            initialOffsetX = { it },
-            animationSpec = tween(
+            initialOffsetX = { it }, animationSpec = tween(
                 durationMillis = 1200, easing = FastOutSlowInEasing
             )
         ), exit = fadeOut()
@@ -146,9 +148,18 @@ fun CalculateScreen(
             //Packaging
             AnimatedVisibility(
                 visible = onScreenLaunch, enter = slideInVertically(
-                    initialOffsetY = { it }, animationSpec = tween(600)
+                    initialOffsetY = { it },
+                    animationSpec = tween(durationMillis = 1000, easing = FastOutSlowInEasing)
+                ) + fadeIn(
+                    animationSpec = tween(
+                        durationMillis = 2000, easing = LinearOutSlowInEasing
+                    )
                 )
-            ) {
+            )
+
+
+            {
+
                 Column {
                     Text(
                         text = "Packaging", style = MediumTextStyle.copy(color = DarkBg)
@@ -192,17 +203,10 @@ fun CalculateScreen(
             }
             Spacer(modifier = Modifier.height(40.dp))
             SubmitButton(
-                navController = navController,
-                isFormValid = isFormValid,
-                onQuestionClicked = null
+                navController = navController, isFormValid = isFormValid, onQuestionClicked = null
             )
         }
     }
-
-}
-
-@Composable
-fun DisplayReceiptScreen() {
 
 }
 

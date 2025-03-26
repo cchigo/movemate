@@ -49,9 +49,11 @@ import com.chichi.shippingapp.ui.theme.OrangeBg
 
 
 @Composable
-fun ReceiptScreen(navController: NavController) {
+fun ReceiptScreen(
+    navController: NavController
+   // navigate: (String) -> Unit
+) {
     var isVisible by remember { mutableStateOf(false) }
-
 
     LaunchedEffect(Unit) {
         isVisible = true
@@ -167,6 +169,7 @@ fun ReceiptScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(18.dp))
 
                 Button(
+
                     onClick = {
                         isVisible = false
                         navController.navigate(Route.MainScreen.routeName)
@@ -181,7 +184,6 @@ fun ReceiptScreen(navController: NavController) {
                         disabledContentColor = Color.White,
                         containerColor = OrangeBg,
                         contentColor = Color.White
-
                     )
                 ) {
                     Text(

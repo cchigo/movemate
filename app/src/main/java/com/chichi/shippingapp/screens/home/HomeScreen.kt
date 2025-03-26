@@ -1,5 +1,6 @@
 package com.chichi.shippingapp.screens.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -56,13 +57,12 @@ import com.chichi.shippingapp.ui.theme.NormalTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeText
 import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 
-
 @Composable
 fun HomeScreen() {
     var onScreenLaunch by remember { mutableStateOf(false) }
-
+    BackHandler(enabled = true) {}
     LaunchedEffect(Unit) {
-        onScreenLaunch = true // Trigger animation when the screen launches
+        onScreenLaunch = true
     }
     Box(
         modifier = Modifier
@@ -71,18 +71,17 @@ fun HomeScreen() {
             .background(MainBg)
     ) {
         Column(
-            modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.background(MainBg), horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Tracking()
 
             Spacer(modifier = Modifier.height(12.dp))
 
-
-                AvailableVehicles(onScreenLaunch)
-
+            AvailableVehicles(onScreenLaunch)
         }
     }
 }
+
 
 @Composable
 fun Tracking() {

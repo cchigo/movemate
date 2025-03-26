@@ -1,5 +1,6 @@
 package com.chichi.shippingapp.screens.shipment
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.tween
@@ -76,9 +77,9 @@ fun ShipmentScreen() {
     val shipments = remember { generateRandomShipmentData() }
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     var onScreenLaunch by remember { mutableStateOf(false) }
-
+    BackHandler(enabled = true) {}
     LaunchedEffect(Unit) {
-        onScreenLaunch = true // Trigger animation when the screen launches
+        onScreenLaunch = true
     }
 
     Scaffold(
@@ -144,8 +145,8 @@ fun ShipmentScreen() {
                                     Text(
                                         text = tabTitle,
                                         style = if (selectedTabIndex == index) NormalTextStyle else LightTextStyle,
-                                        color = if (selectedTabIndex == index) Color.White else MaterialTheme.colorScheme.onPrimary.copy(
-                                            alpha = 0.7f
+                                        color = if (selectedTabIndex == index) Color.White else Color.White.copy(
+                                            alpha = 0.6f
                                         )
                                     )
                                     Box(
@@ -160,9 +161,7 @@ fun ShipmentScreen() {
                                         Text(
                                             text = tabCount.toString(),
                                             style = NormalTextStyle,
-                                            color = if (selectedTabIndex == index) Color.White else MaterialTheme.colorScheme.onPrimary.copy(
-                                                alpha = 0.7f
-                                            )
+                                            color = if (selectedTabIndex == index) Color.White else Color.DarkGray
                                         )
                                     }
                                 }
@@ -184,7 +183,6 @@ private fun ShippingList(
     val listState = rememberLazyListState()
     var startAnimation by remember { mutableStateOf(false) }
 
-    // Start animation when the tab changes
     LaunchedEffect(selectedTabIndex) {
         startAnimation = false
         delay(100)
@@ -283,7 +281,7 @@ enum class ShipmentStatus {
 
 @Composable
 fun ShipmentHistoryItem(
-    shipmentData: ShipmentData, modifier: Modifier = Modifier, alpha: Float = 1f
+    shipmentData: ShipmentData, modifier: Modifier = Modifier
 ) {
     Card(
         colors = CardDefaults.cardColors(
@@ -296,7 +294,7 @@ fun ShipmentHistoryItem(
             modifier = modifier
                 .fillMaxWidth()
                 .background(Color.White)
-                .padding(12.dp),
+                .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

@@ -121,7 +121,7 @@ fun AnimatedFadeInSlideIn(
 fun getHorizontalOffsetX(onScreenLaunch: Boolean = false): Dp {
     val offsetX by animateDpAsState(
         targetValue = if (onScreenLaunch) 0.dp else (300).dp,
-        animationSpec = tween(durationMillis = 1500)
+        animationSpec = tween(durationMillis = 1000)
     )
 
     return offsetX
@@ -129,10 +129,10 @@ fun getHorizontalOffsetX(onScreenLaunch: Boolean = false): Dp {
 @Composable
 fun getVerticalOffsetY(onScreenLaunch: Boolean = false): Dp {
     val offsetY by animateDpAsState(
-        targetValue = if (onScreenLaunch) 0.dp else 300.dp, // Moves up to 0.dp or starts at 300.dp
+        targetValue = if (onScreenLaunch) 0.dp else 300.dp,
         animationSpec = tween(
-            durationMillis = 1500, // Animation duration
-            easing = LinearOutSlowInEasing // Smooth easing for upward motion
+            durationMillis = 1500,
+            easing = LinearOutSlowInEasing
         ),
         label = "verticalSlide"
     )
@@ -142,7 +142,7 @@ fun getVerticalOffsetY(onScreenLaunch: Boolean = false): Dp {
 @Composable
 fun getFadeOutOpacity(onScreenLaunch: Boolean): Float {
     val opacity by animateFloatAsState(
-        targetValue = if (onScreenLaunch) 0f else 1f, // Reversed target values
+        targetValue = if (onScreenLaunch) 0f else 1f,
         animationSpec = tween(durationMillis = 1500),
         label = "fadeOutOpacity"
     )

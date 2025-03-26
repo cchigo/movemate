@@ -1,5 +1,6 @@
 package com.chichi.shippingapp.screens.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
@@ -50,6 +51,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
 import com.chichi.shippingapp.Route
@@ -64,9 +66,11 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun SearchReceiptBar(searchQuery: String, onValueChange: (String) -> Unit) {
+
+    BackHandler(enabled = true) {}
     Box(
         modifier = Modifier
-            .fillMaxWidth().background(PrimaryColor) // for the searc
+            .fillMaxWidth().background(PrimaryColor)
             .clip(RoundedCornerShape(32.dp))
     ) {
         OutlinedTextField(

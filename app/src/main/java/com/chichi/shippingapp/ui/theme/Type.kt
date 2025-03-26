@@ -56,9 +56,8 @@ val BoldTextStyle = TextStyle(
 
 val MediumTextStyle = TextStyle(
     color = BlackFont2,
-    fontSize = 20.sp,
+    fontSize = 18.sp,
     fontFamily = FontFamily.SansSerif,
-
     fontWeight = FontWeight.SemiBold
 )
 val ShippingStateTextStyle = TextStyle(
