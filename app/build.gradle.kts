@@ -62,6 +62,7 @@ dependencies {
     // Dependency Injection
     implementation(libs.hilt)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.play.services.tagmanager.v4.impl)
     ksp(libs.hilt.compiler)
 
     // Navigation
@@ -93,4 +94,9 @@ dependencies {
 
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
+
+    //accompanist
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.navigation.animation)
+
 }
