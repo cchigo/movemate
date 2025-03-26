@@ -23,8 +23,7 @@ This project is an Android application developed using **Jetpack Compose** for U
 # Project Name
 
 ## Overview
-This project is an Android application developed using **Jetpack Compose** for UI and **Kotlin** as the primary language. It includes a **bottom navigation bar**, a **horizontal indicator**, and various UI components optimized for smooth animations and responsiveness.
-
+This project is an Android application developed using **Jetpack Compose** for UI and **Kotlin** as the primary language. 
 ## Tech Stack
 - **Language**: Kotlin
 - **UI Toolkit**: Jetpack Compose
