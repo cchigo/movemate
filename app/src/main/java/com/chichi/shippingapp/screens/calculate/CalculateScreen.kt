@@ -58,13 +58,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.chichi.shippingapp.HorizontalSpacer
 import com.chichi.shippingapp.R
+import com.chichi.shippingapp.Route
 import com.chichi.shippingapp.ui.theme.BlackFont3
 import com.chichi.shippingapp.ui.theme.DarkBg
 import com.chichi.shippingapp.ui.theme.LightGray2
@@ -81,12 +82,17 @@ import kotlinx.coroutines.flow.debounce
 
 @OptIn(FlowPreview::class)
 @Composable
-fun CalculateScreen() {
+fun CalculateScreen(
+    navController: NavController,
+    onQuestionClicked: (() -> Unit)? = null // Nullable lambda
+) {
     val senderLocationText = remember { MutableStateFlow("") }
 
     val receiverLocationText = remember { MutableStateFlow("") }
     val weightText = remember { MutableStateFlow("") }
     val isFormValid = remember { mutableStateOf(false) }
+
+    val displayReceipt = remember { mutableStateOf(false) }
     val selectedPackaging = remember { mutableStateOf("Box") }
 
     val selectedOption by remember { mutableStateOf("Box") }
@@ -174,8 +180,18 @@ fun CalculateScreen() {
             }
         }
         Spacer(modifier = Modifier.height(40.dp))
-        SubmitButton(isFormValid)
+        SubmitButton(
+            navController = navController,
+            isFormValid = isFormValid,
+            displayReceipt = displayReceipt,
+            onQuestionClicked = null
+        )
     }
+
+}
+
+@Composable
+fun DisplayReceiptScreen() {
 
 }
 
@@ -507,7 +523,12 @@ fun CategoryTagItem(category: CategoryType, isSelected: Boolean, onClick: () -> 
 data class CategoryType(val category: String)
 
 @Composable
-fun SubmitButton(isFormValid: MutableState<Boolean>) {
+fun SubmitButton(
+    navController: NavController,
+    isFormValid: MutableState<Boolean>,
+    displayReceipt: MutableState<Boolean>,
+    onQuestionClicked: (() -> Unit)? = null
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -517,8 +538,8 @@ fun SubmitButton(isFormValid: MutableState<Boolean>) {
         Button(
             onClick = {
                 if (isFormValid.value) {
-                    //nav to receipt
-                    // Handle button click
+                    onQuestionClicked?.invoke() // Invoke the lambda if it's not null
+                    navController.navigate(Route.ReceiptScreen.routeName) // Navigate to ReceiptScreen
                 }
             },
             modifier = Modifier
@@ -540,6 +561,18 @@ fun SubmitButton(isFormValid: MutableState<Boolean>) {
                 style = NormalTextStyle.copy(color = Color.White)
             )
         }
+
+
+
+    }
+
+
+}
+
+@Composable
+fun EstimateScreen() {
+    Column (modifier = Modifier.fillMaxSize()){
+        Text(text = "Calculate")
     }
 }
 
@@ -547,5 +580,5 @@ fun SubmitButton(isFormValid: MutableState<Boolean>) {
 @Preview(showBackground = true)
 @Composable
 fun ShippingFormScreenPreview() {
-    CalculateScreen()
+    // CalculateScreen(screensNavigator)
 }

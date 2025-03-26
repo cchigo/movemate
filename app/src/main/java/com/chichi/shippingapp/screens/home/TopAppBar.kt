@@ -1,7 +1,6 @@
 package com.chichi.shippingapp.screens.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,20 +14,13 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,71 +31,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
-import com.chichi.shippingapp.ui.theme.LightTextStyle
-import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeBg
 import com.chichi.shippingapp.ui.theme.PrimaryColor
 import com.chichi.shippingapp.ui.theme.WhiteTextStyleAlpha
-
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppTopBar(
-    isRootRoute: Boolean, currentBottomTab: BottomTab?, onBackClicked: () -> Unit
-) {
-    if (!isRootRoute) {
-        CenterAlignedTopAppBar(
-            title = {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(0.dp)
-                ) {
-                    val text =
-                        if (currentBottomTab?.topBarTitle != null) currentBottomTab.topBarTitle else currentBottomTab?.title
-                    Text(
-                        text = text ?: BottomTab.Home.title,
-                        color = Color.White,
-                        style = MediumTextStyle,
-                        textAlign = TextAlign.Center
-
-                    )
-                }
-            },
-            navigationIcon = {
-                if (!isRootRoute) {
-                    IconButton(
-                        onClick = onBackClicked
-                    ) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
-                            tint = Color.White,
-                            contentDescription = "menu items"
-                        )
-                    }
-                }
-            },
-
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = PrimaryColor,
-                titleContentColor = Color.Black,
-                navigationIconContentColor = Color.Black,
-            ),
-
-            )
-    } else {
-        //displays Receipt Search top bar if current bottom tab is home ie, default
-        UserInfoBar()
-    }
-
-}
-
 
 @Composable
 fun UserInfoBar() {

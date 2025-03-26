@@ -7,18 +7,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -34,6 +32,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
@@ -42,47 +41,48 @@ import com.chichi.shippingapp.ui.theme.LightGray1
 import com.chichi.shippingapp.ui.theme.LightGreen
 import com.chichi.shippingapp.ui.theme.LightPeach
 import com.chichi.shippingapp.ui.theme.LightTextStyle
+import com.chichi.shippingapp.ui.theme.MainBg
 import com.chichi.shippingapp.ui.theme.MediumTextStyle
 import com.chichi.shippingapp.ui.theme.NormalTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeText
+import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 
 
 @Composable
 fun HomeScreen() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Yellow)
+            .wrapContentSize()
+            .padding(0.dp)
+            .background(MainBg)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-               .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Tracking()
 
-           Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             AvailableVehicles()
 
 
         }
 
-    }
+   }
 }
 
 @Composable
 fun Tracking() {
     Column(
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 0.dp)
+        modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 0.dp).background(
+            MainBg)
     ) {
         Text("Tracking", style = MediumTextStyle)
         Spacer(Modifier.height(16.dp))
         Card(
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
             modifier = Modifier
                 .wrapContentHeight()
                 .fillMaxWidth(),
@@ -216,7 +216,7 @@ fun AvailableVehicles(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Red)
+            .background(MainBg)
             .padding(top = 16.dp, start = 16.dp),
         contentAlignment = Alignment.BottomEnd
     ) {
@@ -273,6 +273,8 @@ fun VehicleItem(
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+
         colors = CardDefaults.cardColors(containerColor = Color.White),
         modifier = Modifier
             .width(158.dp)
@@ -311,3 +313,10 @@ fun VehicleItem(
     }
 }
 
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview2() {
+    ShippingAppTheme {
+            HomeScreen()
+    }
+}

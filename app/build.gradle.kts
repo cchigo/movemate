@@ -67,6 +67,8 @@ dependencies {
 
     // Navigation
     implementation(libs.navigation.compose)
+    implementation(libs.raamcosta.destination)
+    ksp(libs.compose.destinations.ksp)
 
     // Networking
     implementation(libs.retrofit)
