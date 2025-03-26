@@ -360,23 +360,3 @@ fun ShipmentHistoryItem(
 }
 
 data class ShippingStatusText(val text: String, val color: Color, val image: Int)
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun ShipmentScreenPreview() {
-//    //   ShipmentScreen()
-//    ShippingAppTheme {
-//
-//        ShipmentHistoryItem(
-//            shipmentData = ShipmentData(
-//
-//                title = "Arriving today!",
-//                description = "Your delivery, #NEJ20089934122231 from Atlanta, is arriving today!",
-//                amount = "$400 USD",
-//                date = "Mar 24, 2025",
-//                status = ShipmentStatus.Loading
-//            )
-//        )
-//    }
-//}

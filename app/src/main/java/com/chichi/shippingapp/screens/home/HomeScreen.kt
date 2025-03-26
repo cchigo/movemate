@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,8 +24,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
@@ -36,6 +43,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
+import com.chichi.shippingapp.getFadeInOpacity
+import com.chichi.shippingapp.getHorizontalOffsetX
 import com.chichi.shippingapp.ui.theme.BoldTextStyle
 import com.chichi.shippingapp.ui.theme.LightGray1
 import com.chichi.shippingapp.ui.theme.LightGreen
@@ -50,6 +59,11 @@ import com.chichi.shippingapp.ui.theme.ShippingAppTheme
 
 @Composable
 fun HomeScreen() {
+    var onScreenLaunch by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        onScreenLaunch = true // Trigger animation when the screen launches
+    }
     Box(
         modifier = Modifier
             .wrapContentSize()
@@ -57,27 +71,28 @@ fun HomeScreen() {
             .background(MainBg)
     ) {
         Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier, horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Tracking()
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            AvailableVehicles()
 
+                AvailableVehicles(onScreenLaunch)
 
         }
-
-   }
+    }
 }
 
 @Composable
 fun Tracking() {
     Column(
         verticalArrangement = Arrangement.Top,
-        modifier = Modifier.padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 0.dp).background(
-            MainBg)
+        modifier = Modifier
+            .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 0.dp)
+            .background(
+                MainBg
+            )
     ) {
         Text("Tracking", style = MediumTextStyle)
         Spacer(Modifier.height(16.dp))
@@ -90,9 +105,7 @@ fun Tracking() {
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                    ,
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     ShipmentItem(
@@ -119,9 +132,7 @@ fun Tracking() {
                     modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
                 )
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start
+                    modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Start
                 ) {
 
                     CircularImage(imageId = R.drawable.ic_sender, bgColor = LightPeach)
@@ -195,8 +206,7 @@ fun Tracking() {
                     textAlign = TextAlign.Center,
                     color = OrangeText,
                     style = MediumTextStyle,
-                    modifier = Modifier
-                        .fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
 
 
@@ -211,7 +221,7 @@ fun Tracking() {
 
 @Composable
 fun AvailableVehicles(
-
+onScreenLaunch : Boolean
 ) {
     Box(
         modifier = Modifier
@@ -237,7 +247,7 @@ fun AvailableVehicles(
                 items(availableVehicles, key = {
                     it.id
                 }) { details ->
-                    VehicleItem(details.header, details.description, details.image)
+                    VehicleItem(details.header, details.description, details.image, onScreenLaunch)
                     Spacer(modifier = Modifier.width(12.dp))
                 }
 
@@ -269,7 +279,8 @@ data class VehicleDetails(
 
 @Composable
 fun VehicleItem(
-    headerText: String, bodyText: String, imageResId: Int
+    headerText: String, bodyText: String, imageResId: Int,
+    onScreenLaunch: Boolean
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -282,7 +293,10 @@ fun VehicleItem(
 
     ) {
         Column(
-            modifier = Modifier.padding(top = 8.dp, start = 8.dp)
+            modifier = Modifier
+                .padding(top = 8.dp, start = 8.dp)
+                .offset(getHorizontalOffsetX(onScreenLaunch))
+                .alpha(getFadeInOpacity(onScreenLaunch))
         ) {
             Spacer(
                 modifier = Modifier
@@ -317,6 +331,6 @@ fun VehicleItem(
 @Composable
 fun GreetingPreview2() {
     ShippingAppTheme {
-            HomeScreen()
+        HomeScreen()
     }
 }

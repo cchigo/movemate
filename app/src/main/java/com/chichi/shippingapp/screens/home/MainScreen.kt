@@ -1,12 +1,19 @@
 package com.chichi.shippingapp.screens.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
@@ -23,12 +30,14 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +47,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.chichi.shippingapp.Route
+import com.chichi.shippingapp.getFadeInOpacity
+import com.chichi.shippingapp.getVerticalOffsetY
 import com.chichi.shippingapp.screens.calculate.CalculateScreen
 import com.chichi.shippingapp.screens.shipment.ShipmentScreen
 import com.chichi.shippingapp.ui.theme.GreyBottomTabColor
@@ -64,6 +75,14 @@ fun MainScreen(navController: NavController) {
             )
         )
     }
+    var onScreenLaunch by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        onScreenLaunch = true
+    }
+    val transitionState = remember { MutableTransitionState(false).apply { targetState = true } }
+
+
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(color = PrimaryColor)
 
@@ -76,14 +95,24 @@ fun MainScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
 
     ) {
-        val isRootRoute = currentBottomTab.routeName == Route.HomeTab.routeName
 
-        if (isRootRoute) {
-            UserInfoBar(navController)
-        } else {
-            MyCenterAlignedTopAppBar(isRootRoute,
-                currentBottomTab = currentBottomTab,
-                onBackClicked = { navController.navigate(Route.MainScreen.routeName) })
+        val isRootRoute = currentBottomTab.routeName == Route.HomeTab.routeName
+        AnimatedVisibility(
+            visibleState = transitionState, enter = fadeIn(
+                animationSpec = tween(durationMillis = 1200)
+            ) + slideInVertically(
+                initialOffsetY = { -it }, // Slide from up (negative offset)
+                animationSpec = tween(durationMillis = 1200)
+            ), exit = fadeOut()
+        ) {
+            if (isRootRoute) {
+
+                UserInfoBar(navController)
+            } else {
+                MyCenterAlignedTopAppBar(isRootRoute,
+                    currentBottomTab = currentBottomTab,
+                    onBackClicked = { navController.navigate(Route.MainScreen.routeName) })
+            }
         }
 
 
@@ -104,38 +133,56 @@ fun MainScreen(navController: NavController) {
                 // Profile Screen
             }
         }
-        NavigationBar(
-            windowInsets = WindowInsets(0, 0, 0, 0),
 
-            ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center
-            ) {
-                val bottomTabs = BottomTabs
+        //slides up
+        AnimatedVisibility(
+            visibleState = transitionState, enter = fadeIn(
+                animationSpec = tween(durationMillis = 1500)
+            ) + slideInVertically(
+                initialOffsetY = { it }, animationSpec = tween(durationMillis = 1500)
+            ), exit = fadeOut()
+        ) {
 
-                bottomTabs.forEach { bottomTab ->
-                    NavigationBarItem(
-                        alwaysShowLabel = true,
-                        icon = { Icon(bottomTab.icon!!, contentDescription = bottomTab.label) },
-                        label = { Text(bottomTab.title) },
-                        selected = currentBottomTab.routeName == bottomTab.routeName,
-                        onClick = {
-                            if (bottomTab.routeName != Route.ProfileTab.routeName) {
-                                currentBottomTab = bottomTab
-                                bottomNavController.navigate(bottomTab.routeName)
-                            }
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = PrimaryColor,
-                            unselectedTextColor = GreyBottomTabColor,
-                            selectedIconColor = PrimaryColor,
-                            unselectedIconColor = GreyBottomTabColor,
-                            indicatorColor = LightGray1.copy(alpha = 0.5f)
+            NavigationBar(
+
+                windowInsets = WindowInsets(0, 0, 0, 0),
+                containerColor = MainBg,
+                modifier = Modifier.alpha(getFadeInOpacity(onScreenLaunch))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .offset(getVerticalOffsetY(onScreenLaunch)),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    val bottomTabs = BottomTabs
+
+                    bottomTabs.forEach { bottomTab ->
+                        NavigationBarItem(
+                            alwaysShowLabel = true,
+                            icon = { Icon(bottomTab.icon!!, contentDescription = bottomTab.label) },
+                            label = { Text(bottomTab.title) },
+                            selected = currentBottomTab.routeName == bottomTab.routeName,
+                            onClick = {
+                                if (bottomTab.routeName != Route.ProfileTab.routeName) {
+                                    currentBottomTab = bottomTab
+                                    bottomNavController.navigate(bottomTab.routeName)
+                                }
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedTextColor = PrimaryColor,
+                                unselectedTextColor = GreyBottomTabColor,
+                                selectedIconColor = PrimaryColor,
+                                unselectedIconColor = GreyBottomTabColor,
+                                indicatorColor = LightGray1.copy(alpha = 0.5f)
+                            )
                         )
-                    )
+                    }
                 }
             }
+
         }
+
     }
 
 
@@ -157,8 +204,7 @@ fun MyCenterAlignedTopAppBar(
                 val text = currentBottomTab?.title ?: BottomTab.Home.title
 
                 Text(
-                    text = text, color = Color.White,
-                   textAlign = TextAlign.Center
+                    text = text, color = Color.White, textAlign = TextAlign.Center
                 )
             }
         }, navigationIcon = {
@@ -191,7 +237,7 @@ fun MyCenterAlignedTopAppBar(
                     Text(
                         text = "Home",
                         color = Color.White,
-                         style = MediumTextStyle,
+                        style = MediumTextStyle,
                         textAlign = TextAlign.Center
                     )
                 }

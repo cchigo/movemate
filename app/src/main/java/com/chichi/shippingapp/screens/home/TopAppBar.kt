@@ -43,6 +43,7 @@ import com.chichi.shippingapp.ui.theme.WhiteTextStyleAlpha
 
 @Composable
 fun UserInfoBar(navController: NavController) {
+
     Column(
         modifier = Modifier
             .wrapContentSize()

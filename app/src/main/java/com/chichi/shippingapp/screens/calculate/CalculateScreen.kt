@@ -2,7 +2,12 @@ package com.chichi.shippingapp.screens.calculate
 
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -91,17 +96,13 @@ fun CalculateScreen(
     val weightText = remember { MutableStateFlow("") }
     val isFormValid = remember { mutableStateOf(false) }
 
-    val displayReceipt = remember { mutableStateOf(false) }
     val selectedPackaging = remember { mutableStateOf("Box") }
-
-    val selectedOption by remember { mutableStateOf("Box") }
-
-
     var onScreenLaunch by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        onScreenLaunch = true // Trigger animation when the screen launches
+        onScreenLaunch = true
     }
+    val transitionState = remember { MutableTransitionState(false).apply { targetState = true } }
 
 
     LaunchedEffect(senderLocationText, receiverLocationText, weightText) {
@@ -116,75 +117,86 @@ fun CalculateScreen(
             isFormValid.value = s.isNotEmpty() && r.isNotEmpty() && w.isNotEmpty()
         }
     }
-
-    Column(
-        modifier = Modifier
-            .background(MainBg)
-            .fillMaxSize()
-            .padding(vertical = 16.dp, horizontal = 16.dp)
-            .fillMaxHeight()
-            .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.Start
+    AnimatedVisibility(
+        visibleState = transitionState, enter = fadeIn(
+            animationSpec = tween(durationMillis = 1200)
+        ) + slideInHorizontally(
+            initialOffsetX = { it },
+            animationSpec = tween(
+                durationMillis = 1200, easing = FastOutSlowInEasing
+            )
+        ), exit = fadeOut()
     ) {
-        Text(
-            text = "Destination", style = MediumTextStyle.copy(color = BlackFont3)
-        )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        DestinationSection(senderLocationText, receiverLocationText, weightText)
-        HorizontalSpacer()
-
-        //Packaging
-        AnimatedVisibility(
-            visible = onScreenLaunch, enter = slideInVertically(
-                initialOffsetY = { it }, animationSpec = tween(600)
-            )
+        Column(
+            modifier = Modifier
+                .background(MainBg)
+                .fillMaxSize()
+                .padding(vertical = 16.dp, horizontal = 16.dp)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState()), horizontalAlignment = Alignment.Start
         ) {
-            Column {
-                Text(
-                    text = "Packaging", style = MediumTextStyle.copy(color = DarkBg)
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = "What are you sending?", style = NormalTextStyle.copy(color = LightGray3)
-                )
-
-                HorizontalSpacer()
-                PackagingDropdown(selectedPackaging)
-
-            }
-        }
-
-        HorizontalSpacer()
-        //Category
-        AnimatedVisibility(
-            visible = onScreenLaunch, enter = slideInVertically(
-                initialOffsetY = { it }, animationSpec = tween(600)
+            Text(
+                text = "Destination", style = MediumTextStyle.copy(color = BlackFont3)
             )
-        ) {
-            Column {
-                Text(
-                    text = "Categories", style = MediumTextStyle.copy(color = DarkBg)
+            Spacer(modifier = Modifier.height(12.dp))
+
+            DestinationSection(senderLocationText, receiverLocationText, weightText)
+            HorizontalSpacer()
+
+            //Packaging
+            AnimatedVisibility(
+                visible = onScreenLaunch, enter = slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(600)
                 )
+            ) {
+                Column {
+                    Text(
+                        text = "Packaging", style = MediumTextStyle.copy(color = DarkBg)
+                    )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
-                Text(
-                    text = "What are you sending?", style = NormalTextStyle.copy(color = LightGray3)
-                )
-                HorizontalSpacer()
-                CategoryTagGrid()
+                    Text(
+                        text = "What are you sending?",
+                        style = NormalTextStyle.copy(color = LightGray3)
+                    )
 
+                    HorizontalSpacer()
+                    PackagingDropdown(selectedPackaging)
+
+                }
             }
+
+            HorizontalSpacer()
+            //Category
+            AnimatedVisibility(
+                visible = onScreenLaunch, enter = slideInVertically(
+                    initialOffsetY = { it }, animationSpec = tween(600)
+                )
+            ) {
+                Column {
+                    Text(
+                        text = "Categories", style = MediumTextStyle.copy(color = DarkBg)
+                    )
+
+                    Spacer(modifier = Modifier.height(6.dp))
+
+                    Text(
+                        text = "What are you sending?",
+                        style = NormalTextStyle.copy(color = LightGray3)
+                    )
+                    HorizontalSpacer()
+                    CategoryTagGrid()
+
+                }
+            }
+            Spacer(modifier = Modifier.height(40.dp))
+            SubmitButton(
+                navController = navController,
+                isFormValid = isFormValid,
+                onQuestionClicked = null
+            )
         }
-        Spacer(modifier = Modifier.height(40.dp))
-        SubmitButton(
-            navController = navController,
-            isFormValid = isFormValid,
-            displayReceipt = displayReceipt,
-            onQuestionClicked = null
-        )
     }
 
 }
@@ -264,9 +276,7 @@ fun PackagingDropdown(selectedPackaging: MutableState<String>) {
                 DropdownMenuItem(
                     text = {
                         Text(
-                            "  📦  Box",
-                            style = MediumTextStyle,
-                            textAlign = TextAlign.Center
+                            "  📦  Box", style = MediumTextStyle, textAlign = TextAlign.Center
                         )
                     },
                     onClick = {
@@ -274,30 +284,22 @@ fun PackagingDropdown(selectedPackaging: MutableState<String>) {
                         isActive = false
                     },
                 )
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            "  📦  Package",
-                            style = MediumTextStyle
-                        )
-                    },
-                    onClick = {
-                        selectedPackaging.value = "Package"
-                        isActive = false
-                    }
-                )
-                DropdownMenuItem(
-                    text = {
-                        Text(
-                            "  🚚  Shipment",
-                            style = MediumTextStyle
-                        )
-                    },
-                    onClick = {
-                        selectedPackaging.value = "Shipment"
-                        isActive = false
-                    }
-                )
+                DropdownMenuItem(text = {
+                    Text(
+                        "  📦  Package", style = MediumTextStyle
+                    )
+                }, onClick = {
+                    selectedPackaging.value = "Package"
+                    isActive = false
+                })
+                DropdownMenuItem(text = {
+                    Text(
+                        "  🚚  Shipment", style = MediumTextStyle
+                    )
+                }, onClick = {
+                    selectedPackaging.value = "Shipment"
+                    isActive = false
+                })
             }
 
         }
@@ -467,8 +469,6 @@ fun CategoryTagGrid() {
         CategoryType("Others")
     )
     val selectedCategories = remember { mutableStateListOf<String>() }
-
-
     FlowRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -525,7 +525,6 @@ data class CategoryType(val category: String)
 fun SubmitButton(
     navController: NavController,
     isFormValid: MutableState<Boolean>,
-    displayReceipt: MutableState<Boolean>,
     onQuestionClicked: (() -> Unit)? = null
 ) {
     Box(
@@ -537,8 +536,8 @@ fun SubmitButton(
         Button(
             onClick = {
                 if (isFormValid.value) {
-                    onQuestionClicked?.invoke() // Invoke the lambda if it's not null
-                    navController.navigate(Route.ReceiptScreen.routeName) // Navigate to ReceiptScreen
+                    onQuestionClicked?.invoke()
+                    navController.navigate(Route.ReceiptScreen.routeName)
                 }
             },
             modifier = Modifier
@@ -562,17 +561,8 @@ fun SubmitButton(
         }
 
 
-
     }
 
-
-}
-
-@Composable
-fun EstimateScreen() {
-    Column (modifier = Modifier.fillMaxSize()){
-        Text(text = "Calculate")
-    }
 }
 
 

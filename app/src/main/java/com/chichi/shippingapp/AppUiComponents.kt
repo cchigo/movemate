@@ -1,8 +1,14 @@
 package com.chichi.shippingapp
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -94,6 +99,25 @@ fun getGradientBrush(gradientType: GradientType): Brush {
 }
 
 @Composable
+fun AnimatedFadeInSlideIn(
+    transitionState: MutableTransitionState<Boolean>,
+    content: @Composable () -> Unit
+) {
+    AnimatedVisibility(
+        visibleState = transitionState,
+        enter = fadeIn(
+            animationSpec = tween(durationMillis = 1500)
+        ) + slideInVertically(
+            initialOffsetY = { -it },
+            animationSpec = tween(durationMillis = 1500)
+        ),
+        exit = fadeOut()
+    ) {
+        content()
+    }
+}
+
+@Composable
 fun getHorizontalOffsetX(onScreenLaunch: Boolean = false): Dp {
     val offsetX by animateDpAsState(
         targetValue = if (onScreenLaunch) 0.dp else (300).dp,
@@ -102,6 +126,29 @@ fun getHorizontalOffsetX(onScreenLaunch: Boolean = false): Dp {
 
     return offsetX
 }
+@Composable
+fun getVerticalOffsetY(onScreenLaunch: Boolean = false): Dp {
+    val offsetY by animateDpAsState(
+        targetValue = if (onScreenLaunch) 0.dp else 300.dp, // Moves up to 0.dp or starts at 300.dp
+        animationSpec = tween(
+            durationMillis = 1500, // Animation duration
+            easing = LinearOutSlowInEasing // Smooth easing for upward motion
+        ),
+        label = "verticalSlide"
+    )
+    return offsetY
+}
+
+@Composable
+fun getFadeOutOpacity(onScreenLaunch: Boolean): Float {
+    val opacity by animateFloatAsState(
+        targetValue = if (onScreenLaunch) 0f else 1f, // Reversed target values
+        animationSpec = tween(durationMillis = 1500),
+        label = "fadeOutOpacity"
+    )
+    return opacity
+}
+
 @Composable
 fun getFadeInOpacity(onScreenLaunch: Boolean): Float {
     val opacity by animateFloatAsState(

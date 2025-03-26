@@ -1,13 +1,14 @@
 package com.chichi.shippingapp.screens.home
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -28,13 +28,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -57,9 +54,7 @@ import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
 import com.chichi.shippingapp.Route
 import com.chichi.shippingapp.screens.calculate.Item
-import com.chichi.shippingapp.screens.calculate.ItemCard
 import com.chichi.shippingapp.ui.theme.LightGray1
-import com.chichi.shippingapp.ui.theme.LightPeach
 import com.chichi.shippingapp.ui.theme.LightTextStyle
 import com.chichi.shippingapp.ui.theme.MainBg
 import com.chichi.shippingapp.ui.theme.NormalTextStyle
@@ -181,19 +176,13 @@ fun SearchScreen(navController: NavController, query: String) {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-
-        AnimatedVisibility(
-            visible = isVisible,
-            enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
-            exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
-        ) {
-            ItemList(filteredItems)
-        }
+        ItemList(filteredItems)
     }
 }
 
 @Composable
 fun ItemList(items: List<Item>) {
+    val transitionState = remember { MutableTransitionState(false).apply { targetState = true } }
 
     if (items.isEmpty()) {
 
@@ -209,30 +198,40 @@ fun ItemList(items: List<Item>) {
             )
         }
     } else {
-
-
-    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        modifier = Modifier
-            .wrapContentSize()
-            .padding(16.dp)
-            .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        LazyColumn(
-            modifier = Modifier.wrapContentSize()
+        AnimatedVisibility(
+            visibleState = transitionState,
+            enter = fadeIn(
+                animationSpec = tween(durationMillis = 1500)
+            ) + slideInVertically(
+                initialOffsetY = { it },
+                animationSpec = tween(durationMillis = 1500)
+            ),
+            exit = fadeOut()
         ) {
-            items(items) { item ->
-                ItemRow(item)
-                HorizontalDivider(
-                    thickness = 1.dp,
-                    color = LightGray1,
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
 
-                )
+            Card(
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                LazyColumn(
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    items(items) { item ->
+                        ItemRow(item)
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = LightGray1,
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 12.dp)
+
+                        )
+                    }
+                }
             }
         }
-    }
     }
 }
 
@@ -244,7 +243,7 @@ fun ItemRow(item: Item) {
         Row(
             modifier = Modifier.padding(16.dp)
         ) {
-            CircularImage(imageId = R.drawable.ic_sender, bgColor = PrimaryColor)
+            CircularImage(imageId = R.drawable.daily_boxes_6, bgColor = PrimaryColor)
 
             Box (Modifier.padding(horizontal = 8.dp)){  ShipmentItem(
                 header = item.name,
