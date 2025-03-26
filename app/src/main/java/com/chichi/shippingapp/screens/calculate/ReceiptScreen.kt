@@ -1,14 +1,22 @@
 package com.chichi.shippingapp.screens.calculate
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,9 +25,21 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +50,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +69,7 @@ import com.chichi.shippingapp.ui.theme.NormalTextStyle
 import com.chichi.shippingapp.ui.theme.OrangeBg
 import com.chichi.shippingapp.ui.theme.PrimaryColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
 @Composable
@@ -221,20 +243,69 @@ fun ReceiptScreen(navController: NavController) {
 //}
 
 
+//@Composable
+//fun SearchScreen(
+//    navController: NavController
+//) {
+//
+//    Column(Modifier.fillMaxSize()) {
+//
+//        Text("Hi search")
+//
+//        Button(onClick = {
+//            navController.navigate(Route.MainScreen.routeName)
+//        }) {
+//            Text("Go Home")
+//        }
+//    }
+//
+//}
+
+
 @Composable
-fun SearchScreen(
-    navController: NavController
-) {
+fun ItemCard(item: Item) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier
+                .size(35.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ic_shipment),
+                contentDescription = "box",
+                modifier = Modifier.size(22.dp)
+            )
+        }
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = item.name,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = if (isSystemInDarkTheme()) Color.White else Color.Black
+                )
+            )
 
-    Column(Modifier.fillMaxSize()) {
+            Spacer(modifier = Modifier.height(4.dp))
 
-        Text("Hi search")
+            Text(
+                text = "${item.code} • ${item.location}",
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+            )
 
-        Button(onClick = {
-            navController.navigate(Route.MainScreen.routeName)
-        }) {
-            Text("Go Home")
+            Spacer(modifier = Modifier.height(8.dp))
+
+            HorizontalDivider(
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.1f),
+                thickness = 1.2.dp
+            )
         }
     }
-
 }
+
+data class Item(val name: String, val code: String, val location: String)

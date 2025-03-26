@@ -106,7 +106,7 @@ fun Tracking() {
                         painter = painterResource(id = R.drawable.ic_cargo_),
                         contentDescription = "ForkLift",
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(56.dp)
                             .rotate(-14f)
                             .padding(end = 8.dp)
                     )

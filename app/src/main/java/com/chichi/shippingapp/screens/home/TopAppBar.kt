@@ -33,14 +33,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.chichi.shippingapp.CircularImage
 import com.chichi.shippingapp.R
+import com.chichi.shippingapp.Route
 import com.chichi.shippingapp.ui.theme.OrangeBg
 import com.chichi.shippingapp.ui.theme.PrimaryColor
 import com.chichi.shippingapp.ui.theme.WhiteTextStyleAlpha
 
 @Composable
-fun UserInfoBar() {
+fun UserInfoBar(navController: NavController) {
     Column(
         modifier = Modifier
             .wrapContentSize()
@@ -114,19 +116,18 @@ fun UserInfoBar() {
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-        SearchReceiptBar()
+        SearchReceiptBar(navController = navController)
 
     }
 }
 
 
 @Composable
-fun SearchReceiptBar() {
+fun SearchReceiptBar(navController: NavController) {
     Box(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth().background(PrimaryColor)
             .clip(RoundedCornerShape(32.dp))
-
 
     ) {
         val searchQuery = remember { mutableStateOf("") }
@@ -134,7 +135,10 @@ fun SearchReceiptBar() {
         OutlinedTextField(
 
             value = searchQuery.value,
-            onValueChange = { searchQuery.value = it },
+            onValueChange = {
+                searchQuery.value = it
+                navController.navigate("${Route.SearchScreen.routeName}/$it")
+            },
             placeholder = {
                 Text(
                     "Enter the receipt number...",

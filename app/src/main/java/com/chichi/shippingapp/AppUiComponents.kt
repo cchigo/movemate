@@ -49,7 +49,7 @@ fun CircularImage(imageId: Int, bgColor: Color? = null) {
             painter = painterResource(id = imageId),
             contentDescription = "Picture",
             modifier = Modifier
-                .size(42.dp)
+                .size(36.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )

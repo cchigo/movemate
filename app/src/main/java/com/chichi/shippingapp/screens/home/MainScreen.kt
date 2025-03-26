@@ -79,7 +79,7 @@ fun MainScreen(navController: NavController) {
         val isRootRoute = currentBottomTab.routeName == Route.HomeTab.routeName
 
         if (isRootRoute) {
-            UserInfoBar()
+            UserInfoBar(navController)
         } else {
             MyCenterAlignedTopAppBar(isRootRoute,
                 currentBottomTab = currentBottomTab,
